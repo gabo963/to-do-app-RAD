@@ -1,4 +1,4 @@
-(ns com.example.model.file
+(ns com.gab.to-do-rad.model.file
   "Functions, resolvers, and mutations supporting `file`.
 
    DO NOT require a RAD model file in this ns. This ns is meant to be an ultimate

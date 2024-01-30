@@ -1,7 +1,7 @@
-(ns com.example.client
+(ns com.gab.to-do-rad.client
   (:require
-    [com.example.application :refer [SPA]]
-    [com.example.ui.root :refer [LandingPage Root]]
+    [com.gab.to-do-rad.application :refer [SPA]]
+    [com.gab.to-do-rad.ui.root :refer [LandingPage Root]]
     [com.fulcrologic.fulcro.algorithms.timbre-support :refer [console-appender prefix-output-fn]]
     [com.fulcrologic.fulcro.application :as app]
     [com.fulcrologic.fulcro.components :as comp]

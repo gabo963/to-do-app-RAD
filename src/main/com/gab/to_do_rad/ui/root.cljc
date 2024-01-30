@@ -1,4 +1,4 @@
-(ns com.example.ui.root
+(ns com.gab.to-do-rad.ui.root
   "App UI root. Standard Fulcro."
   (:require
     #?@(:cljs [[com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
@@ -6,7 +6,7 @@
                [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]])
     #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom :refer [div label input]]
        :cljs [com.fulcrologic.fulcro.dom :as dom :refer [div label input]])
-    [com.example.ui.account-forms :refer [AccountForm AccountList]]
+    [com.gab.to-do-rad.ui.account-forms :refer [AccountForm AccountList]]
     [com.fulcrologic.fulcro.application :as app]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     [com.fulcrologic.fulcro.dom.html-entities :as ent]

@@ -1,9 +1,9 @@
-(ns com.example.components.ring-middleware
+(ns com.gab.to-do-rad.components.ring-middleware
   (:require
     [clojure.string :as str]
-    [com.example.components.blob-store :as bs]
-    [com.example.components.config :as config]
-    [com.example.components.parser :as parser]
+    [com.gab.to-do-rad.components.blob-store :as bs]
+    [com.gab.to-do-rad.components.config :as config]
+    [com.gab.to-do-rad.components.parser :as parser]
     [com.fulcrologic.fulcro.networking.file-upload :as file-upload]
     [com.fulcrologic.fulcro.server.api-middleware :as server]
     [com.fulcrologic.rad.blob :as blob]

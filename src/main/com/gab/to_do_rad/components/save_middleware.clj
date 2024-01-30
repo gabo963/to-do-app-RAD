@@ -1,9 +1,9 @@
-(ns com.example.components.save-middleware
+(ns com.gab.to-do-rad.components.save-middleware
   (:require
     [com.fulcrologic.rad.middleware.save-middleware :as r.s.middleware]
     [com.fulcrologic.rad.database-adapters.datomic-cloud :as datomic]
     [com.fulcrologic.rad.blob :as blob]
-    [com.example.model-rad.attributes :refer [all-attributes]]))
+    [com.gab.to-do-rad.model-rad.attributes :refer [all-attributes]]))
 
 (def middleware
   (->

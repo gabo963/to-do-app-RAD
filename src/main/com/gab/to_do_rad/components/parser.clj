@@ -1,15 +1,15 @@
-(ns com.example.components.parser
+(ns com.gab.to-do-rad.components.parser
   (:require
-    [com.example.components.auto-resolvers :refer [automatic-resolvers]]
-    [com.example.components.blob-store :as bs]
-    [com.example.components.config :refer [config]]
-    [com.example.components.database :refer [datomic-connections]]
-    [com.example.components.delete-middleware :as delete]
-    [com.example.components.save-middleware :as save]
-    [com.example.model-rad.attributes :refer [all-attributes]]
+    [com.gab.to-do-rad.components.auto-resolvers :refer [automatic-resolvers]]
+    [com.gab.to-do-rad.components.blob-store :as bs]
+    [com.gab.to-do-rad.components.config :refer [config]]
+    [com.gab.to-do-rad.components.database :refer [datomic-connections]]
+    [com.gab.to-do-rad.components.delete-middleware :as delete]
+    [com.gab.to-do-rad.components.save-middleware :as save]
+    [com.gab.to-do-rad.model-rad.attributes :refer [all-attributes]]
 
     ;; Require namespaces that define resolvers
-    [com.example.model.account :as m.account]
+    [com.gab.to-do-rad.model.account :as m.account]
 
     [com.fulcrologic.rad.attributes :as attr]
     [com.fulcrologic.rad.blob :as blob]

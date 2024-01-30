@@ -1,4 +1,4 @@
-(ns com.example.components.delete-middleware
+(ns com.gab.to-do-rad.components.delete-middleware
   (:require
     [com.fulcrologic.rad.database-adapters.datomic-cloud :as datomic]))
 

@@ -1,4 +1,4 @@
-(ns com.example.sample-spec
+(ns com.gab.to-do-rad.sample-spec
   (:require
     [fulcro-spec.core :refer [specification assertions component =>]]))
 

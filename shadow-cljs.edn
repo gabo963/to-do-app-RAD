@@ -5,7 +5,7 @@
                        :output-dir "resources/public/js/main"
                        :asset-path "/js/main"
                        :dev        {:compiler-options {}}
-                       :modules    {:main {:init-fn com.example.client/init}}
+                       :modules    {:main {:init-fn com.gab.to-do-rad.client/init}}
                        :js-options {:resolve
                                     {
                                      ;; for performance checking during dev
@@ -20,7 +20,7 @@
                                       :require "@js-joda/timezone/dist/js-joda-timezone-10-year-range.min.js"}}}
                        :devtools   {:preloads   [com.fulcrologic.fulcro.inspect.preload
                                                  com.fulcrologic.fulcro.inspect.dom-picker-preload]
-                                    :after-load com.example.client/refresh}}
+                                    :after-load com.gab.to-do-rad.client/refresh}}
 
             :test     {:target           :browser-test
                        :test-dir         "resources/public/js/test"

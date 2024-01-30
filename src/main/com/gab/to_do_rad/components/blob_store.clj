@@ -1,4 +1,4 @@
-(ns com.example.components.blob-store
+(ns com.gab.to-do-rad.components.blob-store
   (:require
     [com.fulcrologic.rad.blob-storage :as storage]
     [mount.core :refer [defstate]]))

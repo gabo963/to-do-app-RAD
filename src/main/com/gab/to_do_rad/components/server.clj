@@ -1,10 +1,10 @@
-(ns com.example.components.server
+(ns com.gab.to-do-rad.components.server
   (:require
     [org.httpkit.server :refer [run-server]]
     [mount.core :as mount :refer [defstate]]
     [taoensso.timbre :as log]
-    [com.example.components.config :refer [config]]
-    [com.example.components.ring-middleware :refer [middleware]]))
+    [com.gab.to-do-rad.components.config :refer [config]]
+    [com.gab.to-do-rad.components.ring-middleware :refer [middleware]]))
 
 (defstate http-server
   :start
