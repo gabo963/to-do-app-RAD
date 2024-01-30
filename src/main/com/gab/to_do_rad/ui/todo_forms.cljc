@@ -6,7 +6,8 @@
     [com.fulcrologic.rad.report :as report]
     [com.fulcrologic.rad.report-options :as ro]
     [com.fulcrologic.rad.picker-options :as picker-options]
-    [com.gab.to-do-rad.model.category :as category]))
+    [com.gab.to-do-rad.model.category :as category]
+    [com.fulcrologic.fulcro.components :as comp]))
 
 (form/defsc-form TodoForm [this props]
   {fo/id            todo/id
@@ -27,10 +28,11 @@
                      [:todo/status :todo/category]]})
 
 (report/defsc-report TodoReport [this props]
-  {ro/title            "To-Do List"
-   ro/source-attribute :todo/all-todos
-   ro/row-pk           todo/id
-   ro/columns          [todo/text category/label todo/due todo/status todo/done]
+  {ro/title               "To-Do List"
+   ro/source-attribute    :todo/all-todos
+   ro/row-pk              todo/id
+   ro/columns             [todo/text category/label todo/due todo/status todo/done]
+   ro/column-formatters   {:todo/done (fn [this v] (if v "Yes" "No"))}
    ro/row-visible?        (fn [filter-parameters row] (let [{::keys [category]} filter-parameters
                                                             row-category (get row :category/label)]
                                                         (or (= "" category) (= category row-category))))
@@ -50,9 +52,21 @@
                                                                             (fn [{:category/keys [label]}]
                                                                               {:text label :value label}))
                                                                           categories))}}
+   ro/row-actions         [{:label     "Mark Done"
+                            :action    (fn [report-instance {:todo/keys [id]}]
+                                         #?(:cljs
+                                            (comp/transact! report-instance [(todo/mark-todo-done {:todo/id   id
+                                                                                                   :todo/done true})])))
+                            :disabled? (fn [_ row-props] (:todo/done row-props))}
+                           {:label     "Mark Undone"
+                            :action    (fn [report-instance {:todo/keys [id]}]
+                                         #?(:cljs
+                                            (comp/transact! report-instance [(todo/mark-todo-done {:todo/id   id
+                                                                                                   :todo/done false})])))
+                            :disabled? (fn [_ row-props] (not (:todo/done row-props)))}]
    ro/initial-sort-params {:sort-by          :todo/due
                            :sortable-columns #{:todo/due :category/label}
                            :ascending?       true}
-   ro/run-on-mount?    true
-   ro/form-links       {todo/id TodoForm}
-   ro/route            "todo-report"})
+   ro/run-on-mount?       true
+   ro/form-links          {todo/id TodoForm}
+   ro/route               "todo-report"})
