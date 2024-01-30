@@ -10,6 +10,7 @@
 
     ;; Require namespaces that define resolvers
     [com.gab.to-do-rad.model.account :as m.account]
+    [com.gab.to-do-rad.model.todo :as m.todo]
 
     [com.fulcrologic.rad.attributes :as attr]
     [com.fulcrologic.rad.blob :as blob]
@@ -31,7 +32,7 @@
 
 (def all-resolvers
   "The list of all hand-written resolvers/mutations."
-  [index-explorer m.account/resolvers])
+  [index-explorer m.account/resolvers m.todo/resolvers])
 
 (defstate parser
   :start
@@ -47,7 +48,7 @@
       (fn transform-parser-out-plugin-external [parser]
         (fn transform-parser-out-plugin-internal [env tx]
           ;; Ensure the time zone is set for all resolvers/mutations
-          (dt/with-timezone "America/Los_Angeles"
+          (dt/with-timezone "America/Bogota"
             (if (and (map? env) (seq tx))
               (parser env tx)
               {}))))}]

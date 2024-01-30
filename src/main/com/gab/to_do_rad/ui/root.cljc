@@ -6,7 +6,11 @@
                [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]])
     #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom :refer [div label input]]
        :cljs [com.fulcrologic.fulcro.dom :as dom :refer [div label input]])
+
+    ;; UI Components
     [com.gab.to-do-rad.ui.account-forms :refer [AccountForm AccountList]]
+    [com.gab.to-do-rad.ui.todo-forms :refer [TodoForm TodoReport]]
+
     [com.fulcrologic.fulcro.application :as app]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     [com.fulcrologic.fulcro.dom.html-entities :as ent]
@@ -26,7 +30,7 @@
 ;; This will just be a normal router...but there can be many of them.
 (defrouter MainRouter [this {:keys [current-state route-factory route-props]}]
   {:always-render-body? true
-   :router-targets      [LandingPage AccountList AccountForm]}
+   :router-targets      [LandingPage AccountList AccountForm TodoReport TodoForm]}
   ;; Normal Fulcro code to show a loader on slow route change (assuming Semantic UI here, should
   ;; be generalized for RAD so UI-specific code isn't necessary)
   (dom/div
@@ -42,7 +46,7 @@
                    {:ui/router (comp/get-query MainRouter)}
                    ::app/active-remotes]
    :initial-state {:ui/ready? false
-                   :ui/router    {}}}
+                   :ui/router {}}}
   #?(:cljs
      (if ready?
        (let [busy? (seq active-remotes)]
@@ -54,6 +58,10 @@
                  (ui-dropdown-menu {}
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this AccountList {}))} "View All")
                    (ui-dropdown-item {:onClick (fn [] (form/create! this AccountForm))} "New")))
+               (ui-dropdown {:className "item" :text "To-dos"}
+                 (ui-dropdown-menu {}
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this TodoReport {}))} "View All")
+                   (ui-dropdown-item {:onClick (fn [] (form/create! this TodoForm))} "New To-Do")))
                (div :.ui.tiny.loader {:classes [(when busy? "active")]})))
            (div :.ui.segment
              (ui-main-router router))))

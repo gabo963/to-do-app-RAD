@@ -1,6 +1,6 @@
 (ns com.gab.to-do-rad.model.todo
   (:require
-    #?(:clj [com.example.components.database-queries :as queries])
+    #?(:clj [com.gab.to-do-rad.components.database-queries :as queries])
     [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
     [com.wsscode.pathom.connect :as pc]
     [com.fulcrologic.rad.attributes-options :as ao]))
@@ -41,8 +41,8 @@
 
 (defattr all-todos :todo/all-todos :ref
   {ao/target    :todo/id
-   ::pc/output  [{:todo/all-todos [:todo/id]}]
-   ::pc/resolve (fn [{:keys [query-params] :as env} _]
+   ao/pc-output  [{:todo/all-todos [:todo/id]}]
+   ao/pc-resolve (fn [{:keys [query-params] :as env} _]
                   #?(:clj
                      {:todo/all-todos (queries/get-all-todos env query-params)}))})
 #?(:clj
@@ -50,7 +50,9 @@
      {::pc/input  #{:todo/id}
       ::pc/output [:category/id :category/label]}
      (let [result (parser env [{[:todo/id id] [{:todo/category [:category/id :category/label]}]}])]
-       (get-in result [[:todo/id id] :item/category]))))
+       (-> result
+        (get-in  [[:todo/id id] :todo/category])
+         (first)))))
 
 
 (def attributes [id text done due status category all-todos])

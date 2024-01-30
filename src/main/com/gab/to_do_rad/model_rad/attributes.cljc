@@ -7,12 +7,16 @@
   (:require
     [com.gab.to-do-rad.model-rad.account :as account]
     [com.gab.to-do-rad.model-rad.file :as m.file]
+    [com.gab.to-do-rad.model.todo :as m.todo]
+    [com.gab.to-do-rad.model.category :as m.category]
     [com.fulcrologic.rad.attributes :as attr]))
 
 (def all-attributes (into []
                       (concat
                         account/attributes
-                        m.file/attributes)))
+                        m.file/attributes
+                        m.todo/attributes
+                        m.category/attributes)))
 
 (def key->attribute (attr/attribute-map all-attributes))
 
