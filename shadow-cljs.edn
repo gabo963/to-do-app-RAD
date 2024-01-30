@@ -1,10 +1,10 @@
-{:deps     {:aliases [:cljs :test]}
+{:deps     {:aliases [:dev :test]}
  :nrepl    {:port 9000}
  :jvm-opts ["-Xmx2G"]
  :builds   {:main     {:target     :browser
                        :output-dir "resources/public/js/main"
                        :asset-path "/js/main"
-                       :dev        {:compiler-options {}}
+                       :dev        {:compiler-options {:external-config {:guardrails {:emit-spec? true :throw? false}}}}
                        :modules    {:main {:init-fn com.gab.to-do-rad.client/init}}
                        :js-options {:resolve
                                     {

@@ -38,7 +38,7 @@
   (log/info "Starting App")
   ;; default time zone (can be changed at login for given user)
   (history/install-route-history! app (html5-history))
-  (datetime/set-timezone! "America/Los_Angeles")
+  (datetime/set-timezone! "America/Bogota")
   (setup-RAD app)
   (app/mount! app Root "app")
   (hist5/restore-route! app LandingPage {})
