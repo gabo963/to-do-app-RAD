@@ -38,9 +38,9 @@
     (when connection
       (log/info "SEEDING data.")
       (d/transact connection {:tx-data
-                              [(seed/new-category (new-uuid 1) "Grocery")
-                               (seed/new-category (new-uuid 2) "Shopping")
-                               (seed/new-category (new-uuid 3) "Family")
+                              [(seed/new-category (new-uuid 451) "Grocery")
+                               (seed/new-category (new-uuid 452) "Shopping")
+                               (seed/new-category (new-uuid 453) "Family")
                                (seed/new-todo (new-uuid 565) "Buy Eggs" #inst"2024-02-10T00:00:00.001000000-00:00" :todo.status/PLAN false false
                                  :todo/category "Grocery")
                                (seed/new-todo (new-uuid 566) "Buy Onions" #inst"2024-02-04T00:00:00.001000000-00:00" :todo.status/WIP false false

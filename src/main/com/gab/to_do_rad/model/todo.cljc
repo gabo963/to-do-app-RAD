@@ -45,7 +45,7 @@
 
 (defattr category :todo/category :ref
   {ao/target      :category/id
-   ao/cardinality :many
+   ao/cardinality :one
    ao/schema      :production
    ao/identities  #{:todo/id}})
 
@@ -55,14 +55,14 @@
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
                    #?(:clj
                       {:todo/all-todos (queries/get-all-todos env query-params)}))})
+
 #?(:clj
    (pc/defresolver todo-category-resolver [{:keys [parser] :as env} {:todo/keys [id]}]
      {::pc/input  #{:todo/id}
       ::pc/output [:category/id :category/label]}
      (let [result (parser env [{[:todo/id id] [{:todo/category [:category/id :category/label]}]}])]
        (-> result
-         (get-in [[:todo/id id] :todo/category])
-         (first)))))
+         (get-in [[:todo/id id] :todo/category])))))
 
 #?(:clj
    (defmutation mark-todo-done [env {:todo/keys [id done]}]

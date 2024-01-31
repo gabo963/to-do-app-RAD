@@ -20,10 +20,10 @@
    fo/field-styles  {:todo/category :pick-one}
    fo/field-options {:todo/category {::picker-options/query-key       :category/all-categories
                                      ::picker-options/query-component category/Category
-                                     ::picker-options/options-xform   (fn [_ options] (mapv
-                                                                                        (fn [{:category/keys [id label]}]
-                                                                                          {:text (str label) :value [:category/id id]})
-                                                                                        (sort-by :category/label options)))
+                                     ::picker-options/options-xform   (fn [_ options] (print "OPTIONS" options) (mapv
+                                                                                                                  (fn [{:category/keys [id label]}]
+                                                                                                                    {:text (str label) :value [:category/id id]})
+                                                                                                                  (sort-by :category/label options)))
                                      ::picker-options/cache-time-ms   30000}}
    fo/cancel-route  ["todo-report"]
    fo/route-prefix  "todos"
@@ -110,7 +110,9 @@
                                             (comp/transact! report-instance [(todo/mark-todo-done {:todo/id   id
                                                                                                    :todo/done false})]))
                                          (control/run! report-instance))
-                            :disabled? (fn [_ row-props] (not (:todo/done row-props)))}]
+                            :disabled? (fn [_ row-props] (not (:todo/done row-props)))}
+                           {:label  "Delete"
+                            :action (fn [this {:todo/keys [id]}] (form/delete! this :todo/id id))}]
    ro/initial-sort-params {:sort-by          :todo/due
                            :sortable-columns #{:todo/due :category/label :todo/status}
                            :ascending?       true}
