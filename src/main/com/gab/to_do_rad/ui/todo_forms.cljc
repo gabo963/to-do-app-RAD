@@ -1,33 +1,43 @@
 (ns com.gab.to-do-rad.ui.todo-forms
   (:require
     [com.gab.to-do-rad.model.todo :as todo]
+    [com.gab.to-do-rad.model.category :as category]
+    [com.gab.to-do-rad.model-rad.attributes :as model]
     [com.fulcrologic.rad.form-options :as fo]
+    [com.fulcrologic.fulcro.algorithms.form-state :as fs]
     [com.fulcrologic.rad.form :as form]
     [com.fulcrologic.rad.report :as report]
     [com.fulcrologic.rad.report-options :as ro]
     [com.fulcrologic.rad.picker-options :as picker-options]
-    [com.gab.to-do-rad.model.category :as category]
     [com.fulcrologic.fulcro.components :as comp]
     [com.fulcrologic.rad.control :as control]
-    [clojure.string :as str]))
+    [clojure.string :as str]
+    [com.fulcrologic.rad.type-support.date-time :refer [now inst->local-date]]))
+
+(def todo-validator (fs/make-validator (fn [form field]
+                                         (let [value (get form field)]
+                                           (case field
+                                             (= :valid (model/all-attribute-validator form field)))))))
 
 (form/defsc-form TodoForm [this props]
   {fo/id            todo/id
    fo/attributes    [todo/text
                      todo/due
                      todo/status
-                     todo/category]
+                     todo/category
+                     todo/done]
    fo/field-styles  {:todo/category :pick-one}
    fo/field-options {:todo/category {::picker-options/query-key       :category/all-categories
                                      ::picker-options/query-component category/Category
-                                     ::picker-options/options-xform   (fn [_ options] (print "OPTIONS" options) (mapv
-                                                                                                                  (fn [{:category/keys [id label]}]
-                                                                                                                    {:text (str label) :value [:category/id id]})
-                                                                                                                  (sort-by :category/label options)))
+                                     ::picker-options/options-xform   (fn [_ options] (mapv
+                                                                                        (fn [{:category/keys [id label]}]
+                                                                                          {:text (str label) :value [:category/id id]})
+                                                                                        (sort-by :category/label options)))
                                      ::picker-options/cache-time-ms   30000}}
    fo/cancel-route  ["todo-report"]
    fo/route-prefix  "todos"
    fo/title         "Edit To-do"
+   fo/validator     todo-validator
    fo/layout        [[:todo/text]
                      [:todo/due :todo/status :todo/category]]})
 
@@ -112,7 +122,8 @@
                                          (control/run! report-instance))
                             :disabled? (fn [_ row-props] (not (:todo/done row-props)))}
                            {:label  "Delete"
-                            :action (fn [this {:todo/keys [id]}] (form/delete! this :todo/id id))}]
+                            :action (fn [this {:todo/keys [id]}] (form/delete! this :todo/id id))
+                            :style  "ui basic compact mini red button"}]
    ro/initial-sort-params {:sort-by          :todo/due
                            :sortable-columns #{:todo/due :category/label :todo/status}
                            :ascending?       true}

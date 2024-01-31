@@ -9,23 +9,30 @@
     [com.fulcrologic.rad.form :as form]
     [com.wsscode.pathom.connect :as pc]
     [com.fulcrologic.rad.attributes-options :as ao]
-    [com.fulcrologic.rad.type-support.date-time :refer [now]]))
+    [com.fulcrologic.rad.type-support.date-time :refer [now]]
+    [clojure.string :as str]
+    [com.fulcrologic.rad.form-options :as fo]))
 
 (defattr id :todo/id :uuid
   {ao/identity? true
    ao/schema    :production})
 
 (defattr text :todo/text :string
-  {ao/schema     :production
-   ao/identities #{:todo/id}})
+  {ao/schema             :production
+   ao/required?          true
+   ao/valid?             (fn [value _] (-> value (str/trim) (count) (>= 3)))
+   fo/validation-message "Text should be longer than 3 characters"
+   ao/identities         #{:todo/id}})
 
 (defattr done :todo/done :boolean
   {ao/schema     :production
    ao/identities #{:todo/id}})
 
 (defattr due :todo/due :instant
-  {ao/schema     :production
-   ao/identities #{:todo/id}})
+  {ao/schema             :production
+   ao/valid?             (fn [value props qualified-key] (if (get props :todo/done) true (> value (now))))
+   fo/validation-message "Due date should be after today"
+   ao/identities         #{:todo/id}})
 
 (defattr doneDate :todo/doneDate :instant
   {ao/schema     :production
@@ -47,6 +54,7 @@
   {ao/target      :category/id
    ao/cardinality :one
    ao/schema      :production
+   ao/required?   true
    ao/identities  #{:todo/id}})
 
 (defattr all-todos :todo/all-todos :ref
