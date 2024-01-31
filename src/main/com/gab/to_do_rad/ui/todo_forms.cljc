@@ -112,7 +112,7 @@
                                          (control/run! report-instance))
                             :disabled? (fn [_ row-props] (not (:todo/done row-props)))}]
    ro/initial-sort-params {:sort-by          :todo/due
-                           :sortable-columns #{:todo/due :category/label}
+                           :sortable-columns #{:todo/due :category/label :todo/status}
                            :ascending?       true}
    ro/run-on-mount?       true
    ro/form-links          {todo/text TodoForm}

@@ -41,15 +41,17 @@
                               [(seed/new-category (new-uuid 1) "Grocery")
                                (seed/new-category (new-uuid 2) "Shopping")
                                (seed/new-category (new-uuid 3) "Family")
-                               (seed/new-todo (new-uuid 565) "Buy Eggs" #inst"2024-02-10T00:00:00.001000000-00:00" :todo.status/PLAN
+                               (seed/new-todo (new-uuid 565) "Buy Eggs" #inst"2024-02-10T00:00:00.001000000-00:00" :todo.status/PLAN false false
                                  :todo/category "Grocery")
-                               (seed/new-todo (new-uuid 566) "Buy Onions" #inst"2024-02-04T00:00:00.001000000-00:00" :todo.status/WIP
+                               (seed/new-todo (new-uuid 566) "Buy Onions" #inst"2024-02-04T00:00:00.001000000-00:00" :todo.status/WIP false false
                                  :todo/category "Grocery")
-                               (seed/new-todo (new-uuid 567) "Buy Picanha" #inst"2024-02-03T00:00:00.001000000-00:00" :todo.status/DONE
+                               (seed/new-todo (new-uuid 567) "Buy Picanha" #inst"2024-02-03T00:00:00.001000000-00:00" :todo.status/DONE true #inst"2024-02-05T00:00:00.001000000-00:00"
                                  :todo/category "Grocery")
-                               (seed/new-todo (new-uuid 568) "Buy Xbox" #inst"2024-03-10T00:00:00.001000000-00:00" :todo.status/CLOSED
+                               (seed/new-todo (new-uuid 568) "Buy Xbox" #inst"2024-03-10T00:00:00.001000000-00:00" :todo.status/CLOSED false false
                                  :todo/category "Shopping")
-                               (seed/new-todo (new-uuid 569) "Book Dentist Appointment" #inst"2024-03-15T00:00:00.001000000-00:00" :todo.status/LATE
+                               (seed/new-todo (new-uuid 569) "Book Dentist Appointment" #inst"2024-03-15T00:00:00.001000000-00:00" :todo.status/LATE false false
+                                 :todo/category "Family")
+                               (seed/new-todo (new-uuid 570) "Get a new Job" #inst"2023-12-27T00:00:00.001000000-00:00" :todo.status/CLOSED true #inst"2023-12-26T00:00:00.001000000-00:00"
                                  :todo/category "Family")]}))))
 
 (defn start []

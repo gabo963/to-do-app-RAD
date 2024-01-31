@@ -9,11 +9,12 @@
     extras))
 
 (defn new-todo
-  [id text due status & {:as extras}]
+  [id text due status done doneDate & {:as extras}]
   (merge
     {:todo/id     id
      :todo/text   text
-     :todo/done   false
+     :todo/done   done
      :todo/status status
      :todo/due    due}
+    (if doneDate {:todo/doneDate doneDate} {})
     extras))
