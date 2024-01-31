@@ -8,7 +8,8 @@
     [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
     [com.fulcrologic.rad.form :as form]
     [com.wsscode.pathom.connect :as pc]
-    [com.fulcrologic.rad.attributes-options :as ao]))
+    [com.fulcrologic.rad.attributes-options :as ao]
+    [com.fulcrologic.rad.type-support.date-time :refer [now]]))
 
 (defattr id :todo/id :uuid
   {ao/identity? true
@@ -23,6 +24,10 @@
    ao/identities #{:todo/id}})
 
 (defattr due :todo/due :instant
+  {ao/schema     :production
+   ao/identities #{:todo/id}})
+
+(defattr doneDate :todo/doneDate :instant
   {ao/schema     :production
    ao/identities #{:todo/id}})
 
@@ -65,7 +70,8 @@
       ::pc/output [:todo/id]}
      (form/save-form* env {::form/id        id
                            ::form/master-pk :todo/id
-                           ::form/delta     {[:todo/id id] {:todo/done {:before (not done) :after done}}}}))
+                           ::form/delta     {[:todo/id id] {:todo/done     {:before (not done) :after done}
+                                                            :todo/doneDate {:before nil :after (when done (now))}}}}))
    :cljs
    (defmutation mark-todo-done [{:account/keys [id done]}]
      (action [{:keys [state]}]
@@ -73,7 +79,7 @@
      (remote [_] true)))
 
 
-(def attributes [id text done due status category all-todos])
+(def attributes [id text done due doneDate status category all-todos])
 
 #?(:clj
    (def resolvers [todo-category-resolver mark-todo-done]))
