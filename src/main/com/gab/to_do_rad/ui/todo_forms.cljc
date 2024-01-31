@@ -7,7 +7,8 @@
     [com.fulcrologic.rad.report-options :as ro]
     [com.fulcrologic.rad.picker-options :as picker-options]
     [com.gab.to-do-rad.model.category :as category]
-    [com.fulcrologic.fulcro.components :as comp]))
+    [com.fulcrologic.fulcro.components :as comp]
+    [com.fulcrologic.rad.control :as control]))
 
 (form/defsc-form TodoForm [this props]
   {fo/id            todo/id
@@ -56,14 +57,23 @@
                             :action    (fn [report-instance {:todo/keys [id]}]
                                          #?(:cljs
                                             (comp/transact! report-instance [(todo/mark-todo-done {:todo/id   id
-                                                                                                   :todo/done true})])))
+                                                                                                   :todo/done true})])
+                                            :cljs
+                                            (control/run! this)))
+                            :visible?  (fn [_ row-props] (not (:todo/done row-props)))
                             :disabled? (fn [_ row-props] (:todo/done row-props))}
                            {:label     "Mark Undone"
                             :action    (fn [report-instance {:todo/keys [id]}]
                                          #?(:cljs
                                             (comp/transact! report-instance [(todo/mark-todo-done {:todo/id   id
-                                                                                                   :todo/done false})])))
-                            :disabled? (fn [_ row-props] (not (:todo/done row-props)))}]
+                                                                                                   :todo/done false})])
+                                            :cljs
+                                            (control/run! this)))
+                            :visible?  (fn [_ row-props] (:todo/done row-props))
+                            :disabled? (fn [_ row-props] (not (:todo/done row-props)))}
+                           {:label  "Edit"
+                            :action (fn [report-instance {:todo/keys [id]}]
+                                      (print "Entro"))}]
    ro/initial-sort-params {:sort-by          :todo/due
                            :sortable-columns #{:todo/due :category/label}
                            :ascending?       true}
