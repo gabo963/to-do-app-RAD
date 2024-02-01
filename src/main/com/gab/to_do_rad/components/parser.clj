@@ -6,7 +6,7 @@
     [com.gab.to-do-rad.components.database :refer [datomic-connections]]
     [com.gab.to-do-rad.components.delete-middleware :as delete]
     [com.gab.to-do-rad.components.save-middleware :as save]
-    [com.gab.to-do-rad.model-rad.attributes :refer [all-attributes]]
+    [com.gab.to-do-rad.model.attributes :refer [all-attributes]]
 
     ;; Require namespaces that define resolvers
     [com.gab.to-do-rad.model.todo.resolvers :as m.todo]

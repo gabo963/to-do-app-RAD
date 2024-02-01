@@ -1,4 +1,4 @@
-(ns com.gab.to-do-rad.model.category
+(ns com.gab.to-do-rad.model.category.attributes
   (:require
     [com.fulcrologic.rad.attributes :refer [defattr]]
     [com.fulcrologic.rad.attributes-options :as ao]

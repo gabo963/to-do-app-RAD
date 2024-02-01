@@ -5,14 +5,12 @@
          [java-time.api :as jt]]
         :cljs
         [[com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]])
-    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
+    [com.fulcrologic.rad.attributes :refer [defattr]]
     [com.fulcrologic.rad.report-options :as ro]
-    [com.fulcrologic.rad.form :as form]
-    [com.wsscode.pathom.connect :as pc]
     [com.fulcrologic.rad.attributes-options :as ao]
+    [com.fulcrologic.rad.form-options :as fo]
     [com.fulcrologic.rad.type-support.date-time :refer [now]]
-    [clojure.string :as str]
-    [com.fulcrologic.rad.form-options :as fo]))
+    [clojure.string :as str]))
 
 (defattr id :todo/id :uuid
   {ao/identity? true

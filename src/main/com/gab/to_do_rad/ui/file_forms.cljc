@@ -1,6 +1,6 @@
 (ns com.gab.to-do-rad.ui.file-forms
   (:require
-    [com.gab.to-do-rad.model-rad.file :as r.file]
+    [com.gab.to-do-rad.model.file.attributes :as r.file]
     [com.fulcrologic.rad.form-options :as fo]
     [com.fulcrologic.rad.form :as form]))
 

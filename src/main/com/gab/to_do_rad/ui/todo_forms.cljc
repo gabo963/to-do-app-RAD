@@ -1,10 +1,10 @@
 (ns com.gab.to-do-rad.ui.todo-forms
   (:require
     [com.gab.to-do-rad.model.todo.attributes :as todo]
-    [com.gab.to-do-rad.model.category :as category]
-    [com.gab.to-do-rad.model-rad.file :as file]
+    [com.gab.to-do-rad.model.category.attributes :as category]
+    [com.gab.to-do-rad.model.file.attributes :as file]
     [com.gab.to-do-rad.ui.file-forms :refer [FileForm]]
-    [com.gab.to-do-rad.model-rad.attributes :as model]
+    [com.gab.to-do-rad.model.attributes :as model]
     [com.fulcrologic.rad.form-options :as fo]
     [com.fulcrologic.fulcro.algorithms.form-state :as fs]
     [com.fulcrologic.rad.form :as form]

@@ -1,4 +1,4 @@
-(ns com.gab.to-do-rad.model-rad.file
+(ns com.gab.to-do-rad.model.file.attributes
   "RAD definition of a `file`. Attributes only. These will be used all over the app, so try to limit
    requires to model code and library code."
   (:require

@@ -1,7 +1,5 @@
 (ns development
   (:require
-    [clojure.pprint :refer [pprint]]
-    [clojure.repl :refer [doc source]]
     [clojure.tools.namespace.repl :as tools-ns :refer [disable-reload! refresh clear set-refresh-dirs]]
     [com.gab.to-do-rad.components.database :refer [datomic-connections]]
     [com.gab.to-do-rad.components.ring-middleware]
