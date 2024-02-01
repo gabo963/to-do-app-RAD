@@ -1,53 +1,16 @@
-(ns com.gab.to-do-rad.ui.todo-forms
+(ns com.gab.to-do-rad.ui.todo.all-report
   (:require
     [com.gab.to-do-rad.model.todo.attributes :as todo]
     [com.gab.to-do-rad.model.category.attributes :as category]
     [com.gab.to-do-rad.model.file.attributes :as file]
-    [com.gab.to-do-rad.ui.file-forms :refer [FileForm]]
-    [com.gab.to-do-rad.model.attributes :as model]
-    [com.fulcrologic.rad.form-options :as fo]
-    [com.fulcrologic.fulcro.algorithms.form-state :as fs]
     [com.fulcrologic.rad.form :as form]
     [com.fulcrologic.rad.report :as report]
     [com.fulcrologic.rad.report-options :as ro]
     [com.fulcrologic.rad.picker-options :as picker-options]
     [com.fulcrologic.fulcro.components :as comp]
     [com.fulcrologic.rad.control :as control]
+    [com.gab.to-do-rad.ui.todo.form :refer [TodoForm]]
     [clojure.string :as str]))
-
-(def todo-validator (fs/make-validator (fn [form field]
-                                         (let [value (get form field)]
-                                           (case field
-                                             (= :valid (model/all-attribute-validator form field)))))))
-
-(form/defsc-form TodoForm [this props]
-  {fo/id            todo/id
-   fo/attributes    [todo/text
-                     todo/due
-                     todo/status
-                     todo/category
-                     todo/done
-                     todo/files]
-   fo/field-styles  {:todo/category :pick-one}
-   fo/field-options {:todo/category {::picker-options/query-key       :category/all-categories
-                                     ::picker-options/query-component category/Category
-                                     ::picker-options/options-xform   (fn [_ options] (mapv
-                                                                                        (fn [{:category/keys [id label]}]
-                                                                                          {:text (str label) :value [:category/id id]})
-                                                                                        (sort-by :category/label options)))
-                                     ::picker-options/cache-time-ms   30000}}
-   fo/cancel-route  ["todo-report"]
-   fo/route-prefix  "todos"
-   fo/title         "Edit To-do"
-   fo/validator     todo-validator
-   fo/subforms      {:todo/files {fo/ui                    FileForm
-                                 fo/title                 "Files"
-                                 fo/can-delete?           (fn [_ _] true)
-                                 fo/layout-styles         {:ref-container :file}
-                                 ::form/added-via-upload? true}}
-   fo/layout        [[:todo/text]
-                     [:todo/due :todo/status :todo/category]
-                     [:todo/files]]})
 
 (defn- stringSearchValidator [search string]
   (let [search (some-> search (str/trim) (str/lower-case))
@@ -138,19 +101,3 @@
    ro/run-on-mount?       true
    ro/form-links          {todo/text TodoForm}
    ro/route               "todo-report"})
-
-(report/defsc-report TodoDoneReport [this props]
-  {ro/title               "Done To-Do List"
-   ro/source-attribute    :todo/all-todos
-   ro/row-visible?        (fn [_ row]
-                            (let [row-done (get row :todo/done)]
-                              row-done))
-   ro/row-pk              todo/id
-   ro/columns             [todo/text category/label todo/due todo/doneDate todo/completed-time todo/status todo/done file/filename]
-   ro/column-formatters   {:todo/done (fn [this v] (if v "Yes" "No"))}
-   ro/run-on-mount?       true
-   ro/form-links          {todo/text TodoForm}
-   ro/initial-sort-params {:sort-by          :todo/due
-                           :sortable-columns #{:todo/due :todo/doneDate :category/label :todo/status}
-                           :ascending?       true}
-   ro/route               "todo-done-report"})

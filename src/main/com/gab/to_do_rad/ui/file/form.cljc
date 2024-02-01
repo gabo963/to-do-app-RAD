@@ -1,4 +1,4 @@
-(ns com.gab.to-do-rad.ui.file-forms
+(ns com.gab.to-do-rad.ui.file.form
   (:require
     [com.gab.to-do-rad.model.file.attributes :as r.file]
     [com.fulcrologic.rad.form-options :as fo]

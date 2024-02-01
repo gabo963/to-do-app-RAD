@@ -8,7 +8,9 @@
        :cljs [com.fulcrologic.fulcro.dom :as dom :refer [div label input]])
 
     ;; UI Components
-    [com.gab.to-do-rad.ui.todo-forms :refer [TodoForm TodoReport TodoDoneReport]]
+    [com.gab.to-do-rad.ui.todo.form :refer [TodoForm]]
+    [com.gab.to-do-rad.ui.todo.all-report :refer [TodoReport]]
+    [com.gab.to-do-rad.ui.todo.done-report :refer [TodoDoneReport]]
 
     [com.fulcrologic.fulcro.application :as app]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
