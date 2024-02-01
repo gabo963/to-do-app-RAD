@@ -6,7 +6,7 @@
    as a default form validator and attribute lookup."
   (:require
     [com.gab.to-do-rad.model-rad.file :as m.file]
-    [com.gab.to-do-rad.model.todo :as m.todo]
+    [com.gab.to-do-rad.model.todo.attributes :as m.todo]
     [com.gab.to-do-rad.model.category :as m.category]
     [com.fulcrologic.rad.attributes :as attr]))
 

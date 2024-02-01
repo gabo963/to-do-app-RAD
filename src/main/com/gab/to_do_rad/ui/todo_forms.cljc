@@ -1,7 +1,9 @@
 (ns com.gab.to-do-rad.ui.todo-forms
   (:require
-    [com.gab.to-do-rad.model.todo :as todo]
+    [com.gab.to-do-rad.model.todo.attributes :as todo]
     [com.gab.to-do-rad.model.category :as category]
+    [com.gab.to-do-rad.model-rad.file :as file]
+    [com.gab.to-do-rad.ui.file-forms :refer [FileForm]]
     [com.gab.to-do-rad.model-rad.attributes :as model]
     [com.fulcrologic.rad.form-options :as fo]
     [com.fulcrologic.fulcro.algorithms.form-state :as fs]
@@ -24,7 +26,8 @@
                      todo/due
                      todo/status
                      todo/category
-                     todo/done]
+                     todo/done
+                     todo/files]
    fo/field-styles  {:todo/category :pick-one}
    fo/field-options {:todo/category {::picker-options/query-key       :category/all-categories
                                      ::picker-options/query-component category/Category
@@ -37,8 +40,14 @@
    fo/route-prefix  "todos"
    fo/title         "Edit To-do"
    fo/validator     todo-validator
+   fo/subforms      {:todo/files {fo/ui                    FileForm
+                                 fo/title                 "Files"
+                                 fo/can-delete?           (fn [_ _] true)
+                                 fo/layout-styles         {:ref-container :file}
+                                 ::form/added-via-upload? true}}
    fo/layout        [[:todo/text]
-                     [:todo/due :todo/status :todo/category]]})
+                     [:todo/due :todo/status :todo/category]
+                     [:todo/files]]})
 
 (defn- stringSearchValidator [search string]
   (let [search (some-> search (str/trim) (str/lower-case))
@@ -54,17 +63,6 @@
    ro/row-pk              todo/id
    ro/columns             [todo/text category/label todo/due todo/status todo/done]
    ro/column-formatters   {:todo/done (fn [this v] (if v "Yes" "No"))}
-
-   ro/row-visible?        (fn [filter-parameters row]
-                            (let [{::keys [category filter-text show-done?]} filter-parameters
-                                  row-category (get row :category/label)
-                                  row-text     (get row :todo/text)
-                                  row-done     (get row :todo/done)]
-                              (and
-                                (if row-done (= row-done show-done?) true)
-                                (or (= "" category) (= category row-category))
-                                (or (stringSearchValidator filter-text row-text))
-                                )))
 
    ro/controls            {::category    {:type                          :picker
                                           :local?                        true
@@ -101,6 +99,17 @@
                                           :onChange      (fn [this _] (control/run! this))
                                           :label         "Show Completed To-dos"}}
 
+   ro/row-visible?        (fn [filter-parameters row]
+                            (let [{::keys [category filter-text show-done?]} filter-parameters
+                                  row-category (get row :category/label)
+                                  row-text     (get row :todo/text)
+                                  row-done     (get row :todo/done)]
+                              (and
+                                (if row-done (= row-done show-done?) true)
+                                (or (= "" category) (= category row-category))
+                                (or (stringSearchValidator filter-text row-text))
+                                )))
+
    ro/control-layout      {:action-buttons [::new-todo]
                            :inputs         [[::category]
                                             [::filter-text ::search! :_]
@@ -132,14 +141,16 @@
 
 (report/defsc-report TodoDoneReport [this props]
   {ro/title               "Done To-Do List"
-   ro/source-attribute    :todo/done-todos
+   ro/source-attribute    :todo/all-todos
+   ro/row-visible?        (fn [_ row]
+                            (let [row-done (get row :todo/done)]
+                              row-done))
    ro/row-pk              todo/id
-   ro/row-query-inclusion [:todo/time]
-   ro/columns             [todo/text category/label todo/due todo/doneDate todo/completed-time todo/status todo/done]
+   ro/columns             [todo/text category/label todo/due todo/doneDate todo/completed-time todo/status todo/done file/filename]
    ro/column-formatters   {:todo/done (fn [this v] (if v "Yes" "No"))}
    ro/run-on-mount?       true
    ro/form-links          {todo/text TodoForm}
    ro/initial-sort-params {:sort-by          :todo/due
-                           :sortable-columns #{:todo/due :todo/doneDate :todo/completed-time :category/label :todo/status}
+                           :sortable-columns #{:todo/due :todo/doneDate :category/label :todo/status}
                            :ascending?       true}
    ro/route               "todo-done-report"})

@@ -1,8 +1,7 @@
-(ns com.gab.to-do-rad.model.todo
+(ns com.gab.to-do-rad.model.todo.attributes
   (:require
     #?@(:clj
-        [[com.wsscode.pathom.connect :as pc :refer [defmutation]]
-         [com.gab.to-do-rad.components.database-queries :as queries]
+        [[com.gab.to-do-rad.components.database-queries :as queries]
          [java-time.api :as jt]]
         :cljs
         [[com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]])
@@ -53,6 +52,12 @@
    ao/schema            :production
    ao/enumerated-labels statuses})
 
+(defattr files :todo/files :ref
+  {ao/target      :file/id
+   ao/cardinality :many
+   ao/schema      :production
+   ao/identities  #{:todo/id}})
+
 (defattr category :todo/category :ref
   {ao/target      :category/id
    ao/cardinality :one
@@ -69,7 +74,6 @@
 
 (defattr completed-time :todo/completed-time :int
   {ao/target         :todo/id
-   ao/identities     #{:todo/id}
    ro/column-heading "Days Completed before or after due"
    ao/pc-input       #{:todo/id}
    ao/pc-output      [:todo/completed-time]
@@ -80,36 +84,14 @@
                                       doneDate :todo/doneDate} result]
                                  (if done {:todo/completed-time (jt/as (jt/duration doneDate due) :days)} {:todo/completed-time 0}))))})
 
+
+;;TODO: REVIEW
 (defattr done-todos :todo/done-todos :ref
   {ao/target     :todo/id
+   ao/pc-input   #{:todo/done}
    ao/pc-output  [{:todo/done-todos [:todo/id]}]
-   ao/pc-resolve (fn [{:keys [query-params] :as env} _]
+   ao/pc-resolve (fn [{:keys [query-params] :as env} {:todo/keys [done]}]
                    #?(:clj
-                      {:todo/done-todos (queries/get-done-todos env query-params)}))})
+                      {:todo/done-todos (queries/get-all-todos env {:todo/done done})}))})
 
-#?(:clj
-   (pc/defresolver todo-category-resolver [{:keys [parser] :as env} {:todo/keys [id]}]
-     {::pc/input  #{:todo/id}
-      ::pc/output [:category/id :category/label]}
-     (let [result (parser env [{[:todo/id id] [{:todo/category [:category/id :category/label]}]}])]
-       (-> result
-         (get-in [[:todo/id id] :todo/category])))))
-
-#?(:clj
-   (defmutation mark-todo-done [env {:todo/keys [id done]}]
-     {::pc/params #{:todo/id}
-      ::pc/output [:todo/id]}
-     (form/save-form* env {::form/id        id
-                           ::form/master-pk :todo/id
-                           ::form/delta     {[:todo/id id] {:todo/done     {:before (not done) :after done}
-                                                            :todo/doneDate {:before nil :after (when done (now))}}}}))
-   :cljs
-   (defmutation mark-todo-done [{:account/keys [id done]}]
-     (action [{:keys [state]}]
-       (swap! state assoc-in [:todo/id id :todo/done] done))
-     (remote [_] true)))
-
-(def attributes [id text done due doneDate status category completed-time all-todos done-todos])
-
-#?(:clj
-   (def resolvers [todo-category-resolver mark-todo-done]))
+(def attributes [id text done due doneDate status files category completed-time all-todos done-todos])
