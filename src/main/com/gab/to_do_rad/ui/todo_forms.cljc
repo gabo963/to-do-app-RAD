@@ -135,11 +135,11 @@
    ro/source-attribute    :todo/done-todos
    ro/row-pk              todo/id
    ro/row-query-inclusion [:todo/time]
-   ro/columns             [todo/text category/label todo/due todo/doneDate todo/time todo/status todo/done]
+   ro/columns             [todo/text category/label todo/due todo/doneDate todo/completed-time todo/status todo/done]
    ro/column-formatters   {:todo/done (fn [this v] (if v "Yes" "No"))}
    ro/run-on-mount?       true
    ro/form-links          {todo/text TodoForm}
    ro/initial-sort-params {:sort-by          :todo/due
-                           :sortable-columns #{:todo/due :todo/doneDate :todo/time :category/label :todo/status}
+                           :sortable-columns #{:todo/due :todo/doneDate :todo/completed-time :category/label :todo/status}
                            :ascending?       true}
    ro/route               "todo-done-report"})

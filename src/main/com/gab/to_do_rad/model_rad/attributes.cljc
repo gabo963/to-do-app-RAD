@@ -5,7 +5,6 @@
    Also defines common helpful things related to the attributes of the model, such
    as a default form validator and attribute lookup."
   (:require
-    [com.gab.to-do-rad.model-rad.account :as account]
     [com.gab.to-do-rad.model-rad.file :as m.file]
     [com.gab.to-do-rad.model.todo :as m.todo]
     [com.gab.to-do-rad.model.category :as m.category]
@@ -13,7 +12,6 @@
 
 (def all-attributes (into []
                       (concat
-                        account/attributes
                         m.file/attributes
                         m.todo/attributes
                         m.category/attributes)))

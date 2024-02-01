@@ -2,7 +2,8 @@
   (:require
     #?@(:clj
         [[com.wsscode.pathom.connect :as pc :refer [defmutation]]
-         [com.gab.to-do-rad.components.database-queries :as queries]]
+         [com.gab.to-do-rad.components.database-queries :as queries]
+         [java-time.api :as jt]]
         :cljs
         [[com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]])
     [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
@@ -12,8 +13,7 @@
     [com.fulcrologic.rad.attributes-options :as ao]
     [com.fulcrologic.rad.type-support.date-time :refer [now]]
     [clojure.string :as str]
-    [com.fulcrologic.rad.form-options :as fo]
-    [java-time.api :as jt]))
+    [com.fulcrologic.rad.form-options :as fo]))
 
 (defattr id :todo/id :uuid
   {ao/identity? true
@@ -67,18 +67,18 @@
                    #?(:clj
                       {:todo/all-todos (queries/get-all-todos env query-params)}))})
 
-(defattr time :todo/time :int
+(defattr completed-time :todo/completed-time :int
   {ao/target         :todo/id
    ao/identities     #{:todo/id}
-   ro/column-heading "Time between due & Marked Done"
+   ro/column-heading "Days Completed before or after due"
    ao/pc-input       #{:todo/id}
-   ao/pc-output      [:todo/time]
+   ao/pc-output      [:todo/completed-time]
    ao/pc-resolve     (fn [{:keys [parser] :as env} {:todo/keys [id]}]
                        #?(:clj (let [result (get-in (parser env [{[:todo/id id] [:todo/done :todo/due :todo/doneDate]}]) [[:todo/id id]])
                                      {done     :todo/done
                                       due      :todo/due
                                       doneDate :todo/doneDate} result]
-                                 (if done {:todo/time (jt/as (jt/duration doneDate due) :days)} {:todo/time 0}))))})
+                                 (if done {:todo/completed-time (jt/as (jt/duration doneDate due) :days)} {:todo/completed-time 0}))))})
 
 (defattr done-todos :todo/done-todos :ref
   {ao/target     :todo/id
@@ -95,17 +95,6 @@
        (-> result
          (get-in [[:todo/id id] :todo/category])))))
 
-;; Not sure if global resolver should exist here or the attribute should have the resolver in the ao/pc-resolve
-#_(:clj
-    (pc/defresolver todo-due-calc [{:keys [parser] :as env} {:todo/keys [id]}]
-      {::pc/input  #{:todo/id}
-       ::pc/output [:todo/time]}
-      (let [result (get-in (parser env [{[:todo/id id] [:todo/done :todo/due :todo/doneDate]}]) [[:todo/id id]])
-            {done     :todo/done
-             due      :todo/due
-             doneDate :todo/doneDate} result]
-        (if done {:todo/time (jt/as (jt/duration doneDate due) :days)} {:todo/time 0}))))
-
 #?(:clj
    (defmutation mark-todo-done [env {:todo/keys [id done]}]
      {::pc/params #{:todo/id}
@@ -120,7 +109,7 @@
        (swap! state assoc-in [:todo/id id :todo/done] done))
      (remote [_] true)))
 
-(def attributes [id text done due doneDate status category time all-todos done-todos])
+(def attributes [id text done due doneDate status category completed-time all-todos done-todos])
 
 #?(:clj
    (def resolvers [todo-category-resolver mark-todo-done]))

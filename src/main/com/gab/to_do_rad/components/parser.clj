@@ -9,7 +9,6 @@
     [com.gab.to-do-rad.model-rad.attributes :refer [all-attributes]]
 
     ;; Require namespaces that define resolvers
-    [com.gab.to-do-rad.model.account :as m.account]
     [com.gab.to-do-rad.model.todo :as m.todo]
 
     [com.fulcrologic.rad.attributes :as attr]
@@ -32,7 +31,7 @@
 
 (def all-resolvers
   "The list of all hand-written resolvers/mutations."
-  [index-explorer m.account/resolvers m.todo/resolvers])
+  [index-explorer m.todo/resolvers])
 
 (defstate parser
   :start
