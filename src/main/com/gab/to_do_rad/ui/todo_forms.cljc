@@ -11,8 +11,7 @@
     [com.fulcrologic.rad.picker-options :as picker-options]
     [com.fulcrologic.fulcro.components :as comp]
     [com.fulcrologic.rad.control :as control]
-    [clojure.string :as str]
-    [com.fulcrologic.rad.type-support.date-time :refer [now inst->local-date]]))
+    [clojure.string :as str]))
 
 (def todo-validator (fs/make-validator (fn [form field]
                                          (let [value (get form field)]
@@ -53,7 +52,7 @@
   {ro/title               "To-Do List"
    ro/source-attribute    :todo/all-todos
    ro/row-pk              todo/id
-   ro/columns             [todo/text category/label todo/due todo/status todo/done]
+   ro/columns             [todo/text category/label todo/due todo/status todo/done todo/days-time]
    ro/column-formatters   {:todo/done (fn [this v] (if v "Yes" "No"))}
 
    ro/row-visible?        (fn [filter-parameters row]
@@ -130,3 +129,17 @@
    ro/run-on-mount?       true
    ro/form-links          {todo/text TodoForm}
    ro/route               "todo-report"})
+
+(report/defsc-report TodoDoneReport [this props]
+  {ro/title               "Done To-Do List"
+   ro/source-attribute    :todo/done-todos
+   ro/row-pk              todo/id
+   ro/row-query-inclusion [:todo/time]
+   ro/columns             [todo/text category/label todo/due todo/doneDate todo/days-time todo/status todo/done]
+   ro/column-formatters   {:todo/done (fn [this v] (if v "Yes" "No"))}
+   ro/run-on-mount?       true
+   ro/form-links          {todo/text TodoForm}
+   ro/initial-sort-params {:sort-by          :todo/due
+                           :sortable-columns #{:todo/due :todo/doneDate :todo/time :category/label :todo/status}
+                           :ascending?       true}
+   ro/route               "todo-done-report"})

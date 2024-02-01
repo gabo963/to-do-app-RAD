@@ -16,22 +16,6 @@
 ;; Prevent tools-ns from finding source in other places, such as resources
 (set-refresh-dirs "src/main" "src/dev")
 
-(comment
-  (let [db (d/db (:main datomic-connections))]
-    (d/pull db '[*] [:account/id (new-uuid 100)]))
-
-  (let [db (d/db (:main datomic-connections))]
-    (d/pull db '[*] [:todo/id (new-uuid 565)]))
-
-  (let [connection (:main datomic-connections)]
-    (when connection
-      (d/transact connection {:tx-data
-                              [(seed/new-category (new-uuid 1) "Grocery")
-                               (seed/new-todo (new-uuid 565) "Buy Eggs" #inst"2024-02-10T00:00:00.001000000-00:00" :todo.status/PLAN
-                                 :todo/category "Grocery")]})))
-
-  )
-
 (defn seed! []
   (dt/set-timezone! "America/Bogota")
   (let [connection (:main datomic-connections)]

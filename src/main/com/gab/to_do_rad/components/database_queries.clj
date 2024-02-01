@@ -32,3 +32,14 @@
                      [?e :category/id ?id]] db)]
       (mapv (fn [[id]] {:category/id id}) ids))
     (log/error "No database atom for production schema!")))
+
+(defn get-done-todos
+  [env query-params]
+  (if-let [db (env->db env)]
+    (let [ids (d/q '[:find ?uuid
+                     :in $ ?done
+                     :where
+                     [?e :todo/done ?done]
+                     [?e :todo/id ?uuid]] db true)]
+      (mapv (fn [[id]] {:todo/id id}) ids))
+    (log/error "No database atom for production schema!")))
