@@ -52,7 +52,7 @@
   {ro/title               "To-Do List"
    ro/source-attribute    :todo/all-todos
    ro/row-pk              todo/id
-   ro/columns             [todo/text category/label todo/due todo/status todo/done todo/days-time]
+   ro/columns             [todo/text category/label todo/due todo/status todo/done]
    ro/column-formatters   {:todo/done (fn [this v] (if v "Yes" "No"))}
 
    ro/row-visible?        (fn [filter-parameters row]
@@ -135,7 +135,7 @@
    ro/source-attribute    :todo/done-todos
    ro/row-pk              todo/id
    ro/row-query-inclusion [:todo/time]
-   ro/columns             [todo/text category/label todo/due todo/doneDate todo/days-time todo/status todo/done]
+   ro/columns             [todo/text category/label todo/due todo/doneDate todo/time todo/status todo/done]
    ro/column-formatters   {:todo/done (fn [this v] (if v "Yes" "No"))}
    ro/run-on-mount?       true
    ro/form-links          {todo/text TodoForm}
