@@ -13,7 +13,7 @@
     [com.fulcrologic.rad.type-support.date-time :refer [now]]
     [clojure.string :as str]
     [com.fulcrologic.rad.form-options :as fo]
-    [java-time :as jt]))
+    [java-time.api :as jt]))
 
 (defattr id :todo/id :uuid
   {ao/identity? true
@@ -61,7 +61,7 @@
    ao/identities  #{:todo/id}})
 
 (defattr all-todos :todo/all-todos :ref
-  {ao/identities #{:todo/id}
+  {ao/target     :todo/id
    ao/pc-output  [{:todo/all-todos [:todo/id]}]
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
                    #?(:clj
@@ -69,6 +69,7 @@
 
 (defattr time :todo/time :int
   {ao/target         :todo/id
+   ao/identities     #{:todo/id}
    ro/column-heading "Time between due & Marked Done"
    ao/pc-input       #{:todo/id}
    ao/pc-output      [:todo/time]
