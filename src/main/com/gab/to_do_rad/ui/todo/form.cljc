@@ -41,4 +41,6 @@
                                   ::form/added-via-upload? true}}
    fo/layout        [[:todo/text]
                      [:todo/due :todo/status :todo/category]
-                     [:todo/files]]})
+                     [:todo/files]]
+   ;;fo/triggers      {:saved (fn [uism-env ident] (print ident))
+   })
