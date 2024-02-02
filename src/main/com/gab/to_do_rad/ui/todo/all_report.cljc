@@ -1,8 +1,8 @@
 (ns com.gab.to-do-rad.ui.todo.all-report
   (:require
     [com.gab.to-do-rad.model.todo.attributes :as todo]
+    [com.gab.to-do-rad.model.todo.resolvers :as r.todo]
     [com.gab.to-do-rad.model.category.attributes :as category]
-    [com.gab.to-do-rad.model.file.attributes :as file]
     [com.fulcrologic.rad.form :as form]
     [com.fulcrologic.rad.report :as report]
     [com.fulcrologic.rad.report-options :as ro]
@@ -81,14 +81,14 @@
    ro/row-actions         [{:label     "Mark Done"
                             :action    (fn [report-instance {:todo/keys [id]}]
                                          #?(:cljs
-                                            (comp/transact! report-instance [(todo/mark-todo-done {:todo/id   id
+                                            (comp/transact! report-instance [(r.todo/mark-todo-done {:todo/id   id
                                                                                                    :todo/done true})]))
                                          (control/run! report-instance))
                             :disabled? (fn [_ row-props] (:todo/done row-props))}
                            {:label     "Mark Undone"
                             :action    (fn [report-instance {:todo/keys [id]}]
                                          #?(:cljs
-                                            (comp/transact! report-instance [(todo/mark-todo-done {:todo/id   id
+                                            (comp/transact! report-instance [(r.todo/mark-todo-done {:todo/id   id
                                                                                                    :todo/done false})]))
                                          (control/run! report-instance))
                             :disabled? (fn [_ row-props] (not (:todo/done row-props)))}
