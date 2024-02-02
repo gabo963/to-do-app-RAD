@@ -1,5 +1,7 @@
 (ns com.gab.to-do-rad.ui.todo.all-report
   (:require
+    #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom :refer [div label input]]
+       :cljs [com.fulcrologic.fulcro.dom :as dom :refer [div label input]])
     [com.gab.to-do-rad.model.todo.attributes :as todo]
     [com.gab.to-do-rad.model.todo.resolvers :as r.todo]
     [com.gab.to-do-rad.model.category.attributes :as category]
@@ -10,7 +12,8 @@
     [com.fulcrologic.fulcro.components :as comp]
     [com.fulcrologic.rad.control :as control]
     [com.gab.to-do-rad.ui.todo.form :refer [TodoForm]]
-    [clojure.string :as str]))
+    [clojure.string :as str]
+    [com.fulcrologic.rad.semantic-ui-options :as suo]))
 
 (defn- stringSearchValidator [search string]
   (let [search (some-> search (str/trim) (str/lower-case))
@@ -78,23 +81,29 @@
                                             [::filter-text ::search! :_]
                                             [::show-done?]]}
 
+
    ro/row-actions         [{:label     "Mark Done"
+                            :type      :boolean
+                            :style     :toggle
                             :action    (fn [report-instance {:todo/keys [id]}]
                                          #?(:cljs
                                             (comp/transact! report-instance [(r.todo/mark-todo-done {:todo/id   id
-                                                                                                   :todo/done true})]))
+                                                                                                     :todo/done true})]))
                                          (control/run! report-instance))
                             :disabled? (fn [_ row-props] (:todo/done row-props))}
                            {:label     "Mark Undone"
                             :action    (fn [report-instance {:todo/keys [id]}]
                                          #?(:cljs
                                             (comp/transact! report-instance [(r.todo/mark-todo-done {:todo/id   id
-                                                                                                   :todo/done false})]))
+                                                                                                     :todo/done false})]))
                                          (control/run! report-instance))
                             :disabled? (fn [_ row-props] (not (:todo/done row-props)))}
                            {:label  "Delete"
                             :action (fn [this {:todo/keys [id]}] (form/delete! this :todo/id id))
                             :style  "ui basic compact mini red button"}]
+   suo/rendering-options  {suo/report-row-button-renderer (fn [instance row-props {:keys [key disabled? type style]}]
+                                                            (print type style)
+                                                            (dom/div {:key key }"button"))}
    ro/initial-sort-params {:sort-by          :todo/due
                            :sortable-columns #{:todo/due :category/label :todo/status}
                            :ascending?       true}
