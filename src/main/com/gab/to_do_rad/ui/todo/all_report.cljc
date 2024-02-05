@@ -26,9 +26,10 @@
   {ro/title               "To-Do List"
    ro/source-attribute    :todo/all-todos
    ro/row-pk              todo/id
-   ro/columns             [todo/text category/label todo/due todo/status todo/done]
+   ro/columns             [todo/text category/label todo/due todo/status todo/receipt? todo/done]
    suo/rendering-options  {suo/report-row-button-renderer buttonRowRenderer}
-   ro/column-formatters   {:todo/done (fn [this v] (if v "Yes" "No"))}
+   ro/column-formatters   {:todo/done     (fn [this v] (if v "Yes" "No"))
+                           :todo/receipt? (fn [this v] (if v "Yes" "No"))}
 
    ro/controls            {::category    {:type                          :picker
                                           :local?                        true
@@ -82,14 +83,24 @@
                                             [::show-done?]]}
 
 
-   ro/row-actions         [{:label  "Toggle Done"
-                            :type   :boolean
-                            :action (fn [report-instance {:todo/keys [id done]}]
-                                      #?(:cljs
-                                         (comp/transact! report-instance [(r.todo/mark-todo-done {:todo/id   id
-                                                                                                  :todo/done (not done)})]))
-                                      (control/run! report-instance))}
-                           {:label  "Delete"
+   ro/row-actions         [{:label    "Toggle Done"
+                            :type     :boolean
+                            :visible? (fn [_ {:todo/keys [receipt?]}]
+                                        (not receipt?))
+                            :action   (fn [report-instance {:todo/keys [id done]}]
+                                        #?(:cljs
+                                           (comp/transact! report-instance [(r.todo/mark-todo-done {:todo/id   id
+                                                                                                    :todo/done (not done)})]))
+                                        (control/run! report-instance))}
+                           {:label     "Receipt"
+                            :visible?  (fn [_ {:todo/keys [receipt?]}]
+                                         receipt?)
+                            :disabled? (fn [_ {:todo/keys [done]}]
+                                         done)
+                            :style :.positive.ui.button
+                            :action    (fn [report-instance {:todo/keys [id receipt?]}])}
+                           {:label "Delete"
+                            :style :.negative.ui.button
                             :action (fn [this {:todo/keys [id]}] (form/delete! this :todo/id id))}]
    ro/initial-sort-params {:sort-by          :todo/due
                            :sortable-columns #{:todo/due :category/label :todo/status}

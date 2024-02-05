@@ -29,7 +29,7 @@
 
 (defattr due :todo/due :instant
   {ao/schema             :production
-   ao/valid?             (fn [value props qualified-key] (if (get props :todo/done) true (> value (now))))
+   ao/valid?             (fn [value props _] (if (get props :todo/done) true (> value (now))))
    fo/validation-message "Due date should be after today"
    ao/identities         #{:todo/id}})
 
@@ -37,6 +37,18 @@
   {ao/schema         :production
    ro/column-heading "Date Marked Done"
    ao/identities     #{:todo/id}})
+
+(defattr receipt? :todo/receipt? :boolean
+  {ao/schema         :production
+   fo/field-label    "Requires Receipt"
+   ro/column-heading "Requires Receipt"
+   ao/identities     #{:todo/id}})
+
+(defattr receipt :todo/receipt :ref
+  {ao/target      :receipt/id
+   ao/cardinality :one
+   ao/schema      :production
+   ao/identities  #{:todo/id}})
 
 (def statuses #:todo.status {:DONE   "Done"
                              :WIP    "In progress"
@@ -82,14 +94,4 @@
                                       doneDate :todo/doneDate} result]
                                  (if done {:todo/completed-time (jt/as (jt/duration doneDate due) :days)} {:todo/completed-time 0}))))})
 
-
-;;TODO: REVIEW
-(defattr done-todos :todo/done-todos :ref
-  {ao/target     :todo/id
-   ao/pc-input   #{:todo/done}
-   ao/pc-output  [{:todo/done-todos [:todo/id]}]
-   ao/pc-resolve (fn [{:keys [query-params] :as env} {:todo/keys [done]}]
-                   #?(:clj
-                      {:todo/done-todos (queries/get-all-todos env {:todo/done done})}))})
-
-(def attributes [id text done due doneDate status files category completed-time all-todos done-todos])
+(def attributes [id text done due doneDate receipt? receipt status files category completed-time all-todos])

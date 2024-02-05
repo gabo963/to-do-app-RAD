@@ -7,6 +7,7 @@
   (:require
     [com.gab.to-do-rad.model.file.attributes :as m.file]
     [com.gab.to-do-rad.model.todo.attributes :as m.todo]
+    [com.gab.to-do-rad.model.receipt.attributes :as m.receipt]
     [com.gab.to-do-rad.model.category.attributes :as m.category]
     [com.fulcrologic.rad.attributes :as attr]))
 
@@ -14,7 +15,8 @@
                       (concat
                         m.file/attributes
                         m.todo/attributes
-                        m.category/attributes)))
+                        m.category/attributes
+                        m.receipt/attributes)))
 
 (def key->attribute (attr/attribute-map all-attributes))
 

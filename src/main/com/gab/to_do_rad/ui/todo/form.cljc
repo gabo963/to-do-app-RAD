@@ -21,7 +21,8 @@
                      todo/status
                      todo/category
                      todo/done
-                     todo/files]
+                     todo/files
+                     todo/receipt?]
    fo/field-styles  {:todo/category :pick-one}
    fo/field-options {:todo/category {::picker-options/query-key       :category/all-categories
                                      ::picker-options/query-component category/Category
@@ -41,6 +42,7 @@
                                   ::form/added-via-upload? true}}
    fo/layout        [[:todo/text]
                      [:todo/due :todo/status :todo/category]
+                     [:todo/receipt?]
                      [:todo/files]]
-   ;;fo/triggers      {:saved (fn [uism-env ident] (print ident))
+   ;;fo/triggers      {:saved (fn [uism-env ident] (print ident) env)
    })

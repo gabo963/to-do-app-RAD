@@ -15,6 +15,7 @@
      :todo/text   text
      :todo/done   done
      :todo/status status
-     :todo/due    due}
+     :todo/due    due
+     :todo/receipt? false}
     (if doneDate {:todo/doneDate doneDate} {})
     extras))
