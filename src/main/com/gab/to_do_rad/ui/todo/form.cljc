@@ -21,7 +21,6 @@
                      todo/status
                      todo/category
                      todo/done
-                     todo/files
                      todo/receipt?]
    fo/field-styles  {:todo/category :pick-one}
    fo/field-options {:todo/category {::picker-options/query-key       :category/all-categories
@@ -35,14 +34,17 @@
    fo/route-prefix  "todos"
    fo/title         "Edit To-do"
    fo/validator     todo-validator
-   fo/subforms      {:todo/files {fo/ui                    FileForm
+   fo/layout        [[:todo/text]
+                     [:todo/due :todo/status :todo/category]
+                     [:todo/receipt?]]
+   ;;fo/triggers      {:saved (fn [uism-env ident] (print ident) env)
+   })
+
+(comment
+  {fo/subforms      {:todo/files {fo/ui                    FileForm
                                   fo/title                 "Files"
                                   fo/can-delete?           (fn [_ _] true)
                                   fo/layout-styles         {:ref-container :file}
-                                  ::form/added-via-upload? true}}
-   fo/layout        [[:todo/text]
-                     [:todo/due :todo/status :todo/category]
-                     [:todo/receipt?]
-                     [:todo/files]]
-   ;;fo/triggers      {:saved (fn [uism-env ident] (print ident) env)
-   })
+                                  ::form/added-via-upload? true}}}
+
+)

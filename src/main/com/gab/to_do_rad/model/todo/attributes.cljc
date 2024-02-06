@@ -62,12 +62,6 @@
    ao/schema            :production
    ao/enumerated-labels statuses})
 
-(defattr files :todo/files :ref
-  {ao/target      :file/id
-   ao/cardinality :many
-   ao/schema      :production
-   ao/identities  #{:todo/id}})
-
 (defattr category :todo/category :ref
   {ao/target      :category/id
    ao/cardinality :one
@@ -94,4 +88,4 @@
                                       doneDate :todo/doneDate} result]
                                  (if done {:todo/completed-time (jt/as (jt/duration doneDate due) :days)} {:todo/completed-time 0}))))})
 
-(def attributes [id text done due doneDate receipt? receipt status files category completed-time all-todos])
+(def attributes [id text done due doneDate receipt? receipt status category completed-time all-todos])

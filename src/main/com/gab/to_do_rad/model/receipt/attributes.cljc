@@ -16,4 +16,15 @@
   {ao/identity? true
    ao/schema    :production})
 
+(defattr text :receipt/text :string
+  {ao/schema     :production
+   ao/required?  true
+   ao/identities #{:receipt/id}})
+
+(defattr files :receipt/files :ref
+  {ao/target      :file/id
+   ao/cardinality :many
+   ao/schema      :production
+   ao/identities  #{:receipt/id}})
+
 (def attributes [id])
