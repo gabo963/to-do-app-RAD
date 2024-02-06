@@ -9,8 +9,7 @@
     [com.fulcrologic.rad.report-options :as ro]
     [com.fulcrologic.rad.attributes-options :as ao]
     [com.fulcrologic.rad.form-options :as fo]
-    [com.fulcrologic.rad.type-support.date-time :refer [now]]
-    [clojure.string :as str]))
+    [com.fulcrologic.rad.type-support.date-time :refer [now]]))
 
 (defattr id :receipt/id :uuid
   {ao/identity? true
@@ -21,10 +20,27 @@
    ao/required?  true
    ao/identities #{:receipt/id}})
 
+(defattr quantity :receipt/quantity :int
+  {ao/schema     :production
+   ao/required?  true
+   ao/valid?     (fn [value _ _] (> value 0))
+   ao/identities #{:receipt/id}})
+
+(defattr date :receipt/date :instant
+  {ao/schema         :production
+   ao/valid?         (fn [value _ _] (>= value (now)))
+   ro/column-heading "Date received"
+   ao/identities     #{:receipt/id}})
+
+(defattr valid :receipt/valid :boolean
+  {ao/schema         :production
+   ro/column-heading "Valid Receipt"
+   ao/identities     #{:receipt/id}})
+
 (defattr files :receipt/files :ref
   {ao/target      :file/id
    ao/cardinality :many
    ao/schema      :production
    ao/identities  #{:receipt/id}})
 
-(def attributes [id])
+(def attributes [id text quantity date valid files])

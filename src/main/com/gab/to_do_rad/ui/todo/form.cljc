@@ -1,13 +1,16 @@
 (ns com.gab.to-do-rad.ui.todo.form
   (:require
+    #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom :refer [div label input]]
+       :cljs [com.fulcrologic.fulcro.dom :as dom :refer [div label input]])
     [com.gab.to-do-rad.model.todo.attributes :as todo]
     [com.gab.to-do-rad.model.category.attributes :as category]
-    [com.gab.to-do-rad.ui.file.form :refer [FileForm]]
     [com.gab.to-do-rad.model.attributes :as model]
     [com.fulcrologic.rad.form-options :as fo]
     [com.fulcrologic.fulcro.algorithms.form-state :as fs]
     [com.fulcrologic.rad.form :as form]
-    [com.fulcrologic.rad.picker-options :as picker-options]))
+    [com.fulcrologic.fulcro.components :as comp]
+    [com.fulcrologic.rad.picker-options :as picker-options]
+    [com.fulcrologic.fulcro.ui-state-machines :as uism]))
 
 (def todo-validator (fs/make-validator (fn [form field]
                                          (let [value (get form field)]
@@ -37,14 +40,10 @@
    fo/layout        [[:todo/text]
                      [:todo/due :todo/status :todo/category]
                      [:todo/receipt?]]
-   ;;fo/triggers      {:saved (fn [uism-env ident] (print ident) env)
-   })
-
-(comment
-  {fo/subforms      {:todo/files {fo/ui                    FileForm
-                                  fo/title                 "Files"
-                                  fo/can-delete?           (fn [_ _] true)
-                                  fo/layout-styles         {:ref-container :file}
-                                  ::form/added-via-upload? true}}}
-
-)
+   fo/triggers      {:saved (fn [uism-env ident]
+                              #?(:cljs (js/alert (str "To-do with id " ident " has been saved.")))
+                              uism-env)}}
+  (div
+    (print (uism/get-active-state this (comp/get-ident this)))
+    (form/render-layout this props))
+  )

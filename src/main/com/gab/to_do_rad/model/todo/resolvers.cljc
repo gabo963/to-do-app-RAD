@@ -25,7 +25,7 @@
                            ::form/delta     {[:todo/id id] {:todo/done     {:before (not done) :after done}
                                                             :todo/doneDate {:before nil :after (when done (now))}}}}))
    :cljs
-   (defmutation mark-todo-done [{:account/keys [id done]}]
+   (defmutation mark-todo-done [{:todo/keys [id done]}]
      (action [{:keys [state]}]
        (swap! state assoc-in [:todo/id id :todo/done] done))
      (remote [_] true)))

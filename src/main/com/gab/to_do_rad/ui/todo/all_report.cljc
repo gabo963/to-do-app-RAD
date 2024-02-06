@@ -10,6 +10,7 @@
     [com.fulcrologic.fulcro.components :as comp]
     [com.fulcrologic.rad.control :as control]
     [com.gab.to-do-rad.ui.todo.form :refer [TodoForm]]
+    [com.gab.to-do-rad.ui.receipt.form :refer [ReceiptForm]]
     [clojure.string :as str]
     [com.fulcrologic.rad.semantic-ui-options :as suo]
     [com.gab.to-do-rad.ui.util.rendering-utils :refer [buttonRowRenderer]]))
@@ -97,10 +98,9 @@
                                          receipt?)
                             :disabled? (fn [_ {:todo/keys [done]}]
                                          done)
-                            :style :.positive.ui.button
-                            :action    (fn [report-instance {:todo/keys [id receipt?]}])}
-                           {:label "Delete"
-                            :style :.negative.ui.button
+                            :action    (fn [report-instance {:todo/keys [id]}]
+                                         (form/create! report-instance ReceiptForm {:todo/id id}))}
+                           {:label  "Delete"
                             :action (fn [this {:todo/keys [id]}] (form/delete! this :todo/id id))}]
    ro/initial-sort-params {:sort-by          :todo/due
                            :sortable-columns #{:todo/due :category/label :todo/status}
