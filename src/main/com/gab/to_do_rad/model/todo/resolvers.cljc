@@ -30,5 +30,13 @@
        (swap! state assoc-in [:todo/id id :todo/done] done))
      (remote [_] true)))
 
+(defn dissoc-in [m ks v]
+  (update-in m ks dissoc v))
+
+#?(:cljs
+   (defmutation remove-okay-modal [{:todo/keys [id]}]
+     (action [{:keys [state]}]
+       (swap! state dissoc-in [:todo/id id] :ui/open-modal?))))
+
 #?(:clj
    (def resolvers [todo-category-resolver mark-todo-done]))
