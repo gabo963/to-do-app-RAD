@@ -16,26 +16,26 @@
    ao/schema    :production})
 
 (defattr text :receipt/text :string
-  {ao/schema     :production
-   ao/required?  true
-   ao/identities #{:receipt/id}})
+  {ao/schema             :production
+   ro/title              "Receipt Text"
+   fo/validation-message "Require a text description"
+   ao/required?          true
+   ao/identities         #{:receipt/id}})
 
 (defattr quantity :receipt/quantity :int
-  {ao/schema     :production
-   ao/required?  true
-   ao/valid?     (fn [value _ _] (> value 0))
-   ao/identities #{:receipt/id}})
+  {ao/schema             :production
+   ro/title              "Received Quantity"
+   ao/required?          true
+   fo/validation-message "Quantity has to be greater than 0"
+   ao/valid?             (fn [value _ _] (> value 0))
+   ao/identities         #{:receipt/id}})
 
 (defattr date :receipt/date :instant
-  {ao/schema         :production
-   ao/valid?         (fn [value _ _] (>= value (now)))
-   ro/column-heading "Date received"
-   ao/identities     #{:receipt/id}})
-
-(defattr valid :receipt/valid :boolean
-  {ao/schema         :production
-   ro/column-heading "Valid Receipt"
-   ao/identities     #{:receipt/id}})
+  {ao/schema             :production
+   ao/valid?             (fn [value _ _] (>= value (now)))
+   fo/validation-message "Date has to be either now or later"
+   ro/column-heading     "Date received"
+   ao/identities         #{:receipt/id}})
 
 (defattr files :receipt/files :ref
   {ao/target      :file/id
@@ -43,4 +43,4 @@
    ao/schema      :production
    ao/identities  #{:receipt/id}})
 
-(def attributes [id text quantity date valid files])
+(def attributes [id text quantity date files])

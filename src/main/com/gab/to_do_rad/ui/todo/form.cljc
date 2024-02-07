@@ -61,7 +61,7 @@
           (p "The to-do with text: " (i (:todo/text props)) " was saved successfully")
           )
         (ui-modal-actions {}
-          (button :.negative.ui.button
+          (button :.positive.ui.button
             {:onClick (fn [] #?(:cljs (comp/transact! this [(r.todo/remove-okay-modal (comp/get-ident this))])))}
             "Close"))))
     )
