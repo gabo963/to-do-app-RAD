@@ -1,7 +1,7 @@
 (ns com.gab.to-do-rad.ui.todo.form
   (:require
-    #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom :refer [div label input button p i]]
-       :cljs [com.fulcrologic.fulcro.dom :as dom :refer [div label input button p i]])
+    #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom :refer [div label input button p i h3]]
+       :cljs [com.fulcrologic.fulcro.dom :as dom :refer [div label input button p i h3]])
     [com.fulcrologic.semantic-ui.modules.modal.ui-modal :refer [ui-modal]]
     [com.fulcrologic.semantic-ui.modules.modal.ui-modal-header :refer [ui-modal-header]]
     [com.fulcrologic.semantic-ui.modules.modal.ui-modal-content :refer [ui-modal-content]]
@@ -15,7 +15,8 @@
     [com.fulcrologic.rad.form :as form]
     [com.fulcrologic.fulcro.components :as comp]
     [com.fulcrologic.rad.picker-options :as picker-options]
-    [com.fulcrologic.fulcro.ui-state-machines :as uism]))
+    [com.fulcrologic.fulcro.ui-state-machines :as uism]
+    [com.gab.to-do-rad.ui.change-monitor.monitor :refer [ui-change-table]]))
 
 (def todo-validator (fs/make-validator (fn [form field]
                                          (let [value (get form field)]
@@ -45,14 +46,27 @@
    fo/layout          [[:todo/text]
                        [:todo/due :todo/status :todo/category]
                        [:todo/receipt?]]
-   ;;TASK: Complete the on-change trigger.
+   fo/query-inclusion [:ui/open-modal? :ui/lastChange]
    fo/triggers        {:saved     (fn [uism-env ident]
                                     (uism/apply-action
                                       uism-env (fn [state-map] (assoc-in state-map (conj ident :ui/open-modal?) true))))
-                       :on-change (fn [uism-env form-ident qualified-key old-value new-value] uism-env)}
-   fo/query-inclusion [:ui/open-modal?]}
+                       :on-change (fn [uism-env form-ident qualified-key old-value new-value]
+                                    (uism/apply-action uism-env (fn [state-map]
+                                                                  (update-in state-map
+                                                                    (conj form-ident :ui/lastChange)
+                                                                    conj
+                                                                    {:change/key qualified-key :change/old-value old-value :change/new-value new-value}))))}
+   }
   (div
     (form/render-layout this props)
+
+    (div :.ui.container
+      (div :.ui.divider)
+      (h3 "Change History")
+      (div :.ui.segment
+        (ui-change-table
+          {:ui/lastChange (vec (:ui/lastChange props))})
+        ))
 
     (ui-modal {:open (:ui/open-modal? props) :dimmer true}
       (ui-modal-header {} "To-do Saved Successfully")
