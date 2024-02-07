@@ -10,6 +10,7 @@
 
     ;; Require namespaces that define resolvers
     [com.gab.to-do-rad.model.todo.resolvers :as m.todo]
+    [com.gab.to-do-rad.model.receipt.resolvers :as m.receipts]
 
     [com.fulcrologic.rad.attributes :as attr]
     [com.fulcrologic.rad.blob :as blob]
@@ -31,7 +32,7 @@
 
 (def all-resolvers
   "The list of all hand-written resolvers/mutations."
-  [index-explorer m.todo/resolvers])
+  [index-explorer m.todo/resolvers m.receipts/resolvers])
 
 (defstate parser
   :start

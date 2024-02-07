@@ -76,6 +76,13 @@
                    #?(:clj
                       {:todo/all-todos (queries/get-all-todos env query-params)}))})
 
+(defattr all-receipt-todos :todo/all-todos-receipts :ref
+  {ao/target    :todo/id
+   ao/pc-output [{:todo/all-todos-receipts [:todo/id]}]
+   ao/pc-resolve (fn [env _]
+                   #?(:clj
+                      {:todo/all-todos-receipts (queries/get-all-receipt-todos env)}))})
+
 (defattr completed-time :todo/completed-time :int
   {ao/target         :todo/id
    ro/column-heading "Days Completed before or after due"
@@ -88,4 +95,4 @@
                                       doneDate :todo/doneDate} result]
                                  (if done {:todo/completed-time (jt/as (jt/duration doneDate due) :days)} {:todo/completed-time 0}))))})
 
-(def attributes [id text done due doneDate receipt? receipt status category completed-time all-todos])
+(def attributes [id text done due doneDate receipt? receipt status category completed-time all-todos all-receipt-todos])

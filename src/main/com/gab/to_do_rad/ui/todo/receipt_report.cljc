@@ -11,7 +11,7 @@
 
 (report/defsc-report TodoReceiptReport [this props]
   {ro/title               "To-Do's With Receipts"
-   ro/source-attribute    :todo/all-todos
+   ro/source-attribute    :todo/all-todos-receipts
    ro/row-visible?        (fn [_ row]
                             (let [row-receipt (get row :todo/receipt?)]
                               row-receipt))
