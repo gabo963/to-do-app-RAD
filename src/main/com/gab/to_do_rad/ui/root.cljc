@@ -12,6 +12,7 @@
     [com.gab.to-do-rad.ui.todo.all-report :refer [TodoReport]]
     [com.gab.to-do-rad.ui.todo.done-report :refer [TodoDoneReport]]
     [com.gab.to-do-rad.ui.receipt.form :refer [ReceiptForm]]
+    [com.gab.to-do-rad.ui.todo.receipt-report :refer [TodoReceiptReport]]
 
     [com.fulcrologic.fulcro.application :as app]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
@@ -32,7 +33,7 @@
 ;; This will just be a normal router...but there can be many of them.
 (defrouter MainRouter [this {:keys [current-state route-factory route-props]}]
   {:always-render-body? true
-   :router-targets      [LandingPage TodoReport TodoForm TodoDoneReport ReceiptForm]}
+   :router-targets      [LandingPage TodoReport TodoForm TodoDoneReport ReceiptForm TodoReceiptReport]}
   ;; Normal Fulcro code to show a loader on slow route change (assuming Semantic UI here, should
   ;; be generalized for RAD so UI-specific code isn't necessary)
   (dom/div
@@ -63,7 +64,8 @@
                (ui-dropdown {:className "item" :text "Reports"}
                  (ui-dropdown-menu {}
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this TodoReport {}))} "View All")
-                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this TodoDoneReport {}))} "Done-Todos")))
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this TodoDoneReport {}))} "Done To-dos")
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this TodoReceiptReport {}))} "Receipt To-dos")))
                (div :.ui.tiny.loader {:classes [(when busy? "active")]})))
            (div :.ui.segment
              (ui-main-router router))))

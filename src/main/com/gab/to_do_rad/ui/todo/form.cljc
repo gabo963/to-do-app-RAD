@@ -45,9 +45,11 @@
    fo/layout          [[:todo/text]
                        [:todo/due :todo/status :todo/category]
                        [:todo/receipt?]]
-   fo/triggers        {:saved (fn [uism-env ident]
-                                (uism/apply-action
-                                  uism-env (fn [state-map] (assoc-in state-map (conj ident :ui/open-modal?) true))))}
+   ;;TASK: Complete the on-change trigger.
+   fo/triggers        {:saved     (fn [uism-env ident]
+                                    (uism/apply-action
+                                      uism-env (fn [state-map] (assoc-in state-map (conj ident :ui/open-modal?) true))))
+                       :on-change (fn [uism-env form-ident qualified-key old-value new-value] uism-env)}
    fo/query-inclusion [:ui/open-modal?]}
   (div
     (form/render-layout this props)
@@ -57,10 +59,10 @@
       (ui-modal-content {}
         (div :.ui.segment
           (p "The to-do with text: " (i (:todo/text props)) " was saved successfully")
-        )
+          )
         (ui-modal-actions {}
           (button :.negative.ui.button
-            {:onClick (fn [] (comp/transact! this [(r.todo/remove-okay-modal (comp/get-ident this))]))}
+            {:onClick (fn [] #?(:cljs (comp/transact! this [(r.todo/remove-okay-modal (comp/get-ident this))])))}
             "Close"))))
     )
   )

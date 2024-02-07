@@ -4,8 +4,8 @@
         [[com.wsscode.pathom.connect :as pc :refer [defmutation]]]
         :cljs
         [[com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]])
-    [com.fulcrologic.rad.form :as form]
     [com.wsscode.pathom.connect :as pc]
+    [com.fulcrologic.rad.form :as form]
     [com.fulcrologic.rad.type-support.date-time :refer [now]]))
 
 #?(:clj
@@ -27,7 +27,8 @@
    :cljs
    (defmutation mark-todo-done [{:todo/keys [id done]}]
      (action [{:keys [state]}]
-       (swap! state assoc-in [:todo/id id :todo/done] done))
+       (swap! state assoc-in [:todo/id id :todo/done] done)
+       (swap! state assoc-in [:todo/id id :todo/doneDate] (now)))
      (remote [_] true)))
 
 (defn dissoc-in [m ks v]
