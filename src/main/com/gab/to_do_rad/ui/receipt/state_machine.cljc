@@ -16,7 +16,7 @@
       {::uism/handler (fn [{::uism/keys [state-map event-data] :as env}]
                         (let [form-class          (uism/actor-class env :actor/form)
                               form-ident          (uism/actor->ident env :actor/form)
-                              {::keys [id save-mutation]} (comp/component-options form-class)
+                              {::form/keys [id save-mutation]} (comp/component-options form-class)
                               master-pk           (::attr/qualified-key id)
                               proposed-form-props (fs/completed-form-props state-map form-class form-ident)]
                           (if (form/valid? form-class proposed-form-props)
@@ -24,6 +24,7 @@
                                   params        (merge event-data data-to-save)
                                   save-mutation (or save-mutation `form/save-form)
                                   todo-mutation r.receipt/associate-receipt-todo
+                                  {{:keys [confirmed]} ::form/triggers} (some-> form-class (comp/component-options))
                                   todo-id       (get-in (uism/retrieve env :options) [:todo/id])]
                               (if todo-id
                                 (-> env
@@ -32,12 +33,14 @@
                                     (merge params
                                       {::uism/error-event :event/save-failed
                                        ::master-pk        master-pk
-                                       ::id               (second form-ident)
+                                       ::form/id          (second form-ident)
                                        ::m/returning      form-class
                                        ::uism/ok-event    :event/saved}))
                                   (uism/trigger-remote-mutation :actor/form todo-mutation
                                     {:receipt/id (second form-ident)
                                      :todo/id    todo-id})
+                                  (cond->
+                                    confirmed (confirmed form-ident))
                                   (uism/activate :state/saving))
                                 (-> env
                                   (form/clear-server-errors)
@@ -48,6 +51,8 @@
                                        ::id               (second form-ident)
                                        ::m/returning      form-class
                                        ::uism/ok-event    :event/saved}))
+                                  (cond->
+                                    confirmed (confirmed form-ident))
                                   (uism/activate :state/saving))))
                             (-> env
                               (uism/apply-action fs/mark-complete* form-ident)

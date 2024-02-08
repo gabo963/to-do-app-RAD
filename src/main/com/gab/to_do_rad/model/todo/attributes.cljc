@@ -19,7 +19,7 @@
 (defattr text :todo/text :string
   {ao/schema             :production
    ao/required?          true
-   ao/valid?             (fn [value _] (-> value (str/trim) (count) (>= 3)))
+   ao/valid?             (fn [value _] (some-> value (str/trim) (count) (>= 3)))
    fo/validation-message "Text should be longer than 3 characters"
    ao/identities         #{:todo/id}})
 
@@ -77,8 +77,8 @@
                       {:todo/all-todos (queries/get-all-todos env query-params)}))})
 
 (defattr all-receipt-todos :todo/all-todos-receipts :ref
-  {ao/target    :todo/id
-   ao/pc-output [{:todo/all-todos-receipts [:todo/id]}]
+  {ao/target     :todo/id
+   ao/pc-output  [{:todo/all-todos-receipts [:todo/id]}]
    ao/pc-resolve (fn [env _]
                    #?(:clj
                       {:todo/all-todos-receipts (queries/get-all-receipt-todos env)}))})
@@ -89,10 +89,14 @@
    ao/pc-input       #{:todo/id}
    ao/pc-output      [:todo/completed-time]
    ao/pc-resolve     (fn [{:keys [parser] :as env} {:todo/keys [id]}]
-                       #?(:clj (let [result (get-in (parser env [{[:todo/id id] [:todo/done :todo/due :todo/doneDate]}]) [[:todo/id id]])
+                       #?(:clj (let [result (get-in (parser env
+                                                      [{[:todo/id id] [:todo/done :todo/due :todo/doneDate]}])
+                                              [[:todo/id id]])
                                      {done     :todo/done
                                       due      :todo/due
                                       doneDate :todo/doneDate} result]
-                                 (if done {:todo/completed-time (jt/as (jt/duration doneDate due) :days)} {:todo/completed-time 0}))))})
+                                 (if (and done (inst? doneDate) (inst? due))
+                                   {:todo/completed-time (jt/as (jt/duration doneDate due) :days)}
+                                   {:todo/completed-time 0}))))})
 
 (def attributes [id text done due doneDate receipt? receipt status category completed-time all-todos all-receipt-todos])

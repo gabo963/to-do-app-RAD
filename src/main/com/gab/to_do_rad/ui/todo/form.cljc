@@ -29,7 +29,6 @@
                        todo/due
                        todo/status
                        todo/category
-                       todo/done
                        todo/receipt?]
    fo/field-styles    {:todo/category :pick-one}
    fo/field-options   {:todo/category {::picker-options/query-key       :category/all-categories

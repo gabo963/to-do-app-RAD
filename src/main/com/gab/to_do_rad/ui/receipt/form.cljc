@@ -32,7 +32,7 @@
    fo/route-prefix "receipts"
    fo/title        "Update Receipt"
    fo/validator    receipt-validator
-
+   fo/controls     (merge (dissoc form/standard-controls :com.fulcrologic.rad.form/undo) {})
    fo/layout       [[:receipt/text]
                     [:receipt/quantity :receipt/date]
                     [:receipt/files]]
@@ -40,7 +40,10 @@
                                     fo/title                 "Files"
                                     fo/can-delete?           (fn [_ _] true)
                                     fo/layout-styles         {:ref-container :file}
-                                    ::form/added-via-upload? true}}}
+                                    ::form/added-via-upload? true}}
+   fo/triggers     {:confirmed (fn [uism-env ident]
+                                 #?(:cljs (js/alert "CONFIRMED"))
+                                 uism-env)}}
   (div
     (form/render-layout this props)
 
