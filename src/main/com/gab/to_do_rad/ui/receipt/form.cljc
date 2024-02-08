@@ -33,6 +33,7 @@
    fo/title        "Update Receipt"
    fo/validator    receipt-validator
    fo/controls     (merge (dissoc form/standard-controls :com.fulcrologic.rad.form/undo) {})
+   fo/field-styles {:receipt/date :date-at-noon}
    fo/layout       [[:receipt/text]
                     [:receipt/quantity :receipt/date]
                     [:receipt/files]]

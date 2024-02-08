@@ -24,38 +24,39 @@
                                              (= :valid (model/all-attribute-validator form field)))))))
 
 (form/defsc-form TodoForm [this props]
-  {fo/id              todo/id
-   fo/attributes      [todo/text
-                       todo/due
-                       todo/status
-                       todo/category
-                       todo/receipt?]
-   fo/field-styles    {:todo/category :pick-one}
-   fo/field-options   {:todo/category {::picker-options/query-key       :category/all-categories
-                                       ::picker-options/query-component category/Category
-                                       ::picker-options/options-xform   (fn [_ options] (mapv
-                                                                                          (fn [{:category/keys [id label]}]
-                                                                                            {:text (str label) :value [:category/id id]})
-                                                                                          (sort-by :category/label options)))
-                                       ::picker-options/cache-time-ms   30000}}
-   fo/cancel-route    ["todo-report"]
-   fo/route-prefix    "todos"
-   fo/title           "Edit To-do"
-   fo/validator       todo-validator
-   fo/layout          [[:todo/text]
-                       [:todo/due :todo/status :todo/category]
-                       [:todo/receipt?]]
-   fo/query-inclusion [:ui/open-modal? :ui/lastChange]
-   fo/triggers        {:saved     (fn [uism-env ident]
-                                    (uism/apply-action
-                                      uism-env (fn [state-map] (assoc-in state-map (conj ident :ui/open-modal?) true))))
-                       :on-change (fn [uism-env form-ident qualified-key old-value new-value]
-                                    (uism/apply-action uism-env (fn [state-map]
-                                                                  (update-in state-map
-                                                                    (conj form-ident :ui/lastChange)
-                                                                    conj
-                                                                    {:change/key qualified-key :change/old-value old-value :change/new-value new-value}))))}
-   }
+  {fo/id               todo/id
+   fo/attributes       [todo/text
+                        todo/due
+                        todo/status
+                        todo/category
+                        todo/done
+                        todo/receipt?]
+   fo/field-styles     {:todo/category :pick-one}
+   fo/field-options    {:todo/category {::picker-options/query-key       :category/all-categories
+                                        ::picker-options/query-component category/Category
+                                        ::picker-options/options-xform   (fn [_ options] (mapv
+                                                                                           (fn [{:category/keys [id label]}]
+                                                                                             {:text (str label) :value [:category/id id]})
+                                                                                           (sort-by :category/label options)))
+                                        ::picker-options/cache-time-ms   30000}}
+   fo/cancel-route     ["todo-report"]
+   fo/route-prefix     "todos"
+   fo/title            "Edit To-do"
+   fo/validator        todo-validator
+   fo/read-only-fields #{:todo/done}
+   fo/layout           [[:todo/text]
+                        [:todo/due :todo/status :todo/category]
+                        [:todo/receipt? :todo/done]]
+   fo/query-inclusion  [:ui/open-modal? :ui/lastChange]
+   fo/triggers         {:saved     (fn [uism-env ident]
+                                     (uism/apply-action
+                                       uism-env (fn [state-map] (assoc-in state-map (conj ident :ui/open-modal?) true))))
+                        :on-change (fn [uism-env form-ident qualified-key old-value new-value]
+                                     (uism/apply-action uism-env (fn [state-map]
+                                                                   (update-in state-map
+                                                                     (conj form-ident :ui/lastChange)
+                                                                     conj
+                                                                     {:change/key qualified-key :change/old-value old-value :change/new-value new-value}))))}}
   (div
     (form/render-layout this props)
 
