@@ -8,14 +8,24 @@
      :category/label label}
     extras))
 
-(defn new-todo
-  [id text due status done doneDate & {:as extras}]
+(defn new-receipt
+  [dbId id text quantity date & {:as extras}]
   (merge
-    {:todo/id     id
-     :todo/text   text
-     :todo/done   done
-     :todo/status status
-     :todo/due    due
-     :todo/receipt? false}
-    (if doneDate {:todo/doneDate doneDate} {})
+    {:db/id            dbId
+     :receipt/id       id
+     :receipt/text     text
+     :receipt/quantity quantity
+     :receipt/date     date}
+    extras))
+
+(defn new-todo
+  [id text due status done receipt? doneDate & {:as extras}]
+  (merge
+    {:todo/id       id
+     :todo/text     text
+     :todo/done     done
+     :todo/status   status
+     :todo/due      due
+     :todo/receipt? receipt?}
+    (if done {:todo/doneDate doneDate} {})
     extras))

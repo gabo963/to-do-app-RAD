@@ -22,6 +22,17 @@
       (mapv (fn [[id]] {:todo/id id}) ids))
     (log/error "No database atom for production schema!")))
 
+(defn get-all-receipt-todos
+  [env]
+  (if-let [db (env->db env)]
+    (let [ids (d/q '[:find ?uuid
+                     :where
+                     [?t :todo/id ?uuid]
+                     [?t :todo/receipt ?e]
+                     [?e :receipt/id ?eid]] db)]
+      (mapv (fn [[id]] {:todo/id id}) ids))
+    (log/error "No database atom for production schema!")))
+
 (defn get-all-categories
   [env query-params]
   (if-let [db (env->db env)]
