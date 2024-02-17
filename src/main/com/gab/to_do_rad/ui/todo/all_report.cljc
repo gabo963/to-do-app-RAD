@@ -27,10 +27,11 @@
   {ro/title               "To-Do List"
    ro/source-attribute    :todo/all-todos
    ro/row-pk              todo/id
-   ro/columns             [todo/text category/label todo/due todo/status todo/receipt? todo/done]
+   ro/columns             [todo/text todo/due todo/category todo/status todo/receipt? todo/done]
    suo/rendering-options  {suo/report-row-button-renderer buttonRowRenderer}
    ro/column-formatters   {:todo/done     (fn [this v] (if v "Yes" "No"))
-                           :todo/receipt? (fn [this v] (if v "Yes" "No"))}
+                           :todo/receipt? (fn [this v] (if v "Yes" "No"))
+                           :todo/category (fn [this v] (get v :category/label))}
 
    ro/controls            {::category    {:type                          :picker
                                           :local?                        true
@@ -69,7 +70,7 @@
 
    ro/row-visible?        (fn [filter-parameters row]
                             (let [{::keys [category filter-text show-done?]} filter-parameters
-                                  row-category (get row :category/label)
+                                  row-category (get-in row [:todo/category :category/label])
                                   row-text     (get row :todo/text)
                                   row-done     (get row :todo/done)]
                               (and

@@ -9,14 +9,6 @@
     [com.fulcrologic.rad.type-support.date-time :refer [now]]))
 
 #?(:clj
-   (pc/defresolver todo-category-resolver [{:keys [parser] :as env} {:todo/keys [id]}]
-     {::pc/input  #{:todo/id}
-      ::pc/output [:category/id :category/label]}
-     (let [result (parser env [{[:todo/id id] [{:todo/category [:category/id :category/label]}]}])]
-       (-> result
-         (get-in [[:todo/id id] :todo/category])))))
-
-#?(:clj
    (pc/defresolver todo-receipt-resolver [{:keys [parser] :as env} {:todo/keys [id]}]
      {::pc/input  #{:todo/id}
       ::pc/output [:receipt/id]}
@@ -48,4 +40,4 @@
        (swap! state dissoc-in [:todo/id id] :ui/open-modal?))))
 
 #?(:clj
-   (def resolvers [todo-category-resolver mark-todo-done todo-receipt-resolver]))
+   (def resolvers [mark-todo-done todo-receipt-resolver]))

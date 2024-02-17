@@ -66,6 +66,7 @@
   {ao/target      :category/id
    ao/cardinality :one
    ao/schema      :production
+   ro/column-EQL  {:todo/category [:category/id :category/label]} ;;TODO: Crear componente dummy de category para el comp/getquery
    ao/required?   true
    ao/identities  #{:todo/id}})
 
@@ -83,6 +84,13 @@
                    #?(:clj
                       {:todo/all-todos-receipts (queries/get-all-receipt-todos env)}))})
 
+#?(:clj
+   (defn todo-completed-time
+     [{:todo/keys [done due doneDate] :as todo}]
+     (if (and done (inst? doneDate) (inst? due))
+       {:todo/completed-time (jt/as (jt/duration doneDate due) :days)}
+       {:todo/completed-time 0})))
+
 (defattr completed-time :todo/completed-time :int
   {ao/target         :todo/id
    ro/column-heading "Days Completed before or after due"
@@ -91,12 +99,7 @@
    ao/pc-resolve     (fn [{:keys [parser] :as env} {:todo/keys [id]}]
                        #?(:clj (let [result (get-in (parser env
                                                       [{[:todo/id id] [:todo/done :todo/due :todo/doneDate]}])
-                                              [[:todo/id id]])
-                                     {done     :todo/done
-                                      due      :todo/due
-                                      doneDate :todo/doneDate} result]
-                                 (if (and done (inst? doneDate) (inst? due))
-                                   {:todo/completed-time (jt/as (jt/duration doneDate due) :days)}
-                                   {:todo/completed-time 0}))))})
+                                              [[:todo/id id]])]
+                                 (todo-completed-time result))))})
 
 (def attributes [id text done due doneDate receipt? receipt status category completed-time all-todos all-receipt-todos])
