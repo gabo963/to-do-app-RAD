@@ -6,7 +6,7 @@
     [com.fulcrologic.rad.report :as report]
     [com.fulcrologic.rad.report-options :as ro]
     [com.gab.to-do-rad.ui.todo.form :refer [TodoForm]]
-    [com.fulcrologic.rad.attributes-options :as ao]
+    [com.fulcrologic.rad.attributes-options]
     [com.gab.to-do-rad.ui.receipt.form :refer [ReceiptForm]]
     [com.fulcrologic.rad.attributes :refer [new-attribute]]))
 
@@ -30,21 +30,11 @@
    ro/column-formatters   {:todo/done           (fn [_ v] (if v "Yes" "No"))
                            :todo/receipt?       (fn [_ v] (if v "Yes" "No"))
                            :todo/category       (fn [_ v] (get v :category/label))
-                           :ui/receipt-text     (fn [this v] (-> this
-                                                               (comp/props)
-                                                               (:ui/current-rows)
-                                                               (first)
-                                                               (:todo/receipt)
-                                                               (:receipt/text)))
-                           :ui/receipt-quantity (fn [this v] (-> this
-                                                               (comp/props)
-                                                               (:ui/current-rows)
-                                                               (first)
-                                                               (:todo/receipt)
-                                                               (:receipt/quantity)))}
+                           :ui/receipt-text     (fn [_ _ row-props _] (get-in row-props [:todo/receipt :receipt/text]))
+                           :ui/receipt-quantity (fn [_ _ row-props _] (get-in row-props [:todo/receipt :receipt/quantity]))}
    ro/run-on-mount?       true
    ro/form-links          {todo/text    TodoForm
-                           receipt/text ReceiptForm}
+                           receipt-text ReceiptForm}
    ro/initial-sort-params {:sort-by          :todo/due
                            :sortable-columns #{:todo/due :todo/doneDate :category/label :todo/status}
                            :ascending?       true}
